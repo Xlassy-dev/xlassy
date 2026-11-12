@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SellerMargin — Know Your Real Selling Profit</title>
+<meta name="description" content="Calculate marketplace fees, product costs, margins, ROI and break-even prices across Amazon, eBay, Shopify, Etsy and Walmart — all in one premium seller platform.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","name":"SellerMargin","description":"Ecommerce profit intelligence platform","potentialAction":{"@type":"SearchAction","target":"#search","query-input":"required name=search_term_string"}}
+</script>
+<style>
+:root{
+  --bg:#FAFAF8; --card:#FFFFFF; --text:#111827; --muted:#6B7280;
+  --accent:#C9A227; --accent-ink:#7A6114; --emerald:#0F766E; --border:#E5E7EB;
+  --shadow:0 1px 2px rgba(17,24,39,.04),0 8px 24px rgba(17,24,39,.06);
+  --shadow-lg:0 12px 40px rgba(17,24,39,.12);
+  --radius:14px; --max:1160px;
+}
+[data-theme="dark"]{
+  --bg:#0B0F14; --card:#111827; --text:#F9FAFB; --muted:#9CA3AF;
+  --border:#1F2937; --accent:#D4AF37; --accent-ink:#E3C565; --emerald:#2DD4BF;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);
+  --shadow-lg:0 12px 40px rgba(0,0,0,.5);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;font-size:16px;transition:background .3s,color .3s}
+.container{max-width:var(--max);margin:0 auto;padding:0 24px}
+h1{font-size:clamp(2.2rem,5vw,3.4rem);font-weight:800;letter-spacing:-.03em;line-height:1.1}
+h2{font-size:clamp(1.6rem,3.5vw,2.3rem);font-weight:700;letter-spacing:-.02em}
+h3{font-size:1.15rem;font-weight:600}
+p{color:var(--muted)}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:.78rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
+.eyebrow::before{content:"";width:24px;height:1px;background:var(--accent)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:600;font-size:.95rem;padding:13px 26px;border-radius:10px;border:1px solid transparent;cursor:pointer;transition:all .2s;text-decoration:none;font-family:inherit}
+.btn-primary{background:var(--text);color:var(--bg)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+[data-theme="dark"] .btn-primary{background:var(--accent);color:#0B0F14}
+.btn-outline{background:transparent;border-color:var(--border);color:var(--text)}
+.btn-outline:hover{border-color:var(--text)}
+.btn-gold{background:linear-gradient(135deg,#C9A227,#B8911F);color:#fff}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+/* NAV */
+header{position:sticky;top:0;z-index:100;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+.nav{display:flex;align-items:center;gap:8px;height:68px}
+.logo{font-weight:800;font-size:1.25rem;letter-spacing:-.02em;text-decoration:none;color:var(--text);display:flex;align-items:center;gap:9px;margin-right:14px}
+.logo-mark{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#C9A227,#7A6114);display:grid;place-items:center;color:#fff;font-size:.85rem;font-weight:800}
+.nav-links{display:flex;gap:4px;flex:1}
+.nav-links a{text-decoration:none;color:var(--muted);font-size:.9rem;font-weight:500;padding:8px 12px;border-radius:8px;transition:all .15s}
+.nav-links a:hover{color:var(--text);background:color-mix(in srgb,var(--text) 5%,transparent)}
+.nav-right{display:flex;align-items:center;gap:8px}
+.icon-btn{width:38px;height:38px;border-radius:9px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;display:grid;place-items:center;transition:all .15s}
+.icon-btn:hover{border-color:var(--text)}
+.hamburger{display:none}
+.mobile-menu{display:none;position:absolute;top:68px;left:0;right:0;background:var(--card);border-bottom:1px solid var(--border);padding:16px 24px;flex-direction:column;gap:4px}
+.mobile-menu.open{display:flex}
+.mobile-menu a{text-decoration:none;color:var(--text);font-weight:500;padding:12px 8px;border-bottom:1px solid var(--border)}
+@media(max-width:880px){.nav-links{display:none}.hamburger{display:grid}}
+/* HERO */
+.hero{padding:96px 0 72px;position:relative;overflow:hidden}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+@media(max-width:940px){.hero-grid{grid-template-columns:1fr}}
+.hero h1 .gold{color:var(--accent);position:relative}
+.hero-sub{font-size:1.1rem;max-width:520px;margin:22px 0 30px}
+.hero-ctas{display:flex;gap:12px;flex-wrap:wrap}
+.hero-proof{display:flex;gap:28px;margin-top:44px;flex-wrap:wrap}
+.proof-item b{font-size:1.4rem;font-weight:800;display:block}
+.proof-item span{font-size:.82rem;color:var(--muted)}
+/* CALCULATOR UI */
+.calc-card{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:26px}
+.calc-card .cc-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.calc-card .cc-head h3{font-size:1rem}
+.badge-live{font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--emerald);background:color-mix(in srgb,var(--emerald) 10%,transparent);padding:4px 10px;border-radius:20px}
+.field{margin-bottom:14px}
+.field label{display:flex;justify-content:space-between;font-size:.82rem;font-weight:600;color:var(--muted);margin-bottom:6px}
+.field label .tip{font-weight:500;color:var(--accent);cursor:help;text-decoration:underline dotted;cursor:help}
+.field .input-wrap{display:flex;align-items:center;background:var(--bg);border:1px solid var(--border);border-radius:10px;transition:border-color .15s}
+.field .input-wrap:focus-within{border-color:var(--accent)}
+.field .prefix{padding:0 12px;color:var(--muted);font-size:.9rem;font-weight:600;user-select:none}
+.field input{flex:1;min-width:0;background:transparent;border:none;outline:none;padding:12px 14px 12px 0;font-size:1rem;font-weight:600;color:var(--text);font-family:inherit}
+.field .suffix{padding:0 12px;color:var(--muted);font-size:.85rem;user-select:none}
+.field.error .input-wrap{border-color:#DC2626}
+.field .err-msg{font-size:.75rem;color:#DC2626;margin-top:4px;display:none}
+.field.error .err-msg{display:block}
+.results{margin-top:18px;border-top:1px solid var(--border);padding-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.result-main{grid-column:1/-1;background:linear-gradient(135deg,color-mix(in srgb,var(--emerald) 8%,transparent),transparent);border:1px solid color-mix(in srgb,var(--emerald) 25%,var(--border));border-radius:12px;padding:16px 18px}
+.result-main .rm-label{font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.result-main .rm-value{font-size:1.9rem;font-weight:800;color:var(--emerald);letter-spacing:-.02em}
+.result-mini{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 14px}
+.result-mini .rm-label{font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.result-mini .rm-value{font-size:1.1rem;font-weight:700}
+.result-mini.neg .rm-value{color:#DC2626}
+.calc-actions{display:flex;gap:10px;margin-top:16px}
+.calc-actions .btn{padding:10px 16px;font-size:.85rem;flex:1}
+/* SECTIONS */
+section{padding:80px 0}
+.section-head{text-align:center;max-width:640px;margin:0 auto 52px}
+.section-head p{margin-top:14px}
+.cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media(max-width:940px){.cards-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.cards-grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;transition:all .25s;position:relative}
+.card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:color-mix(in srgb,var(--accent) 40%,var(--border))}
+.card-icon{width:44px;height:44px;border-radius:11px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 14%,transparent),color-mix(in srgb,var(--emerald) 10%,transparent));display:grid;place-items:center;font-size:1.2rem;margin-bottom:16px}
+.card h3{margin-bottom:8px}
+.card p{font-size:.9rem}
+.card a.tool-link{display:inline-block;margin-top:14px;font-size:.85rem;font-weight:600;color:var(--accent);text-decoration:none}
+.card a.tool-link:hover{text-decoration:underline}
+/* COMPARE TABLE */
+.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:14px;background:var(--card);box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;min-width:640px}
+th,td{padding:14px 18px;text-align:left;border-bottom:1px solid var(--border);font-size:.92rem}
+th{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);background:var(--bg)}
+tr:last-child td{border-bottom:none}
+td.num{font-variant-numeric:tabular-nums;font-weight:600}
+td .pos{color:var(--emerald);font-weight:700}
+td .neg{color:#DC2626;font-weight:700}
+.mk-select{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}
+.mk-chip{padding:8px 18px;border-radius:24px;border:1px solid var(--border);background:var(--card);font-size:.85rem;font-weight:600;cursor:pointer;transition:all .15s;color:var(--text);font-family:inherit}
+.mk-chip.active{background:var(--text);color:var(--bg);border-color:var(--text)}
+.mk-chip:hover:not(.active){border-color:var(--accent)}
+/* MISC */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+@media(max-width:880px){.two-col{grid-template-columns:1fr}}
+.steps{display:flex;flex-direction:column;gap:0}
+.step{display:flex;gap:18px;padding:22px 0;border-bottom:1px solid var(--border)}
+.step:last-child{border-bottom:none}
+.step-num{width:36px;height:36px;border-radius:50%;background:var(--text);color:var(--bg);display:grid;place-items:center;font-weight:700;font-size:.85rem;flex-shrink:0}
+.step h3{margin-bottom:4px}
+.step p{font-size:.9rem}
+/* FAQ */
+.faq-item{border:1px solid var(--border);border-radius:12px;margin-bottom:10px;background:var(--card);overflow:hidden}
+.faq-q{width:100%;display:flex;justify-content:space-between;align-items:center;padding:18px 22px;background:none;border:none;cursor:pointer;font-size:.98rem;font-weight:600;color:var(--text);text-align:left;font-family:inherit;gap:12px}
+.faq-q .chev{transition:transform .25s;color:var(--accent);flex-shrink:0}
+.faq-item.open .chev{transform:rotate(180deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.faq-a p{padding:0 22px 18px;font-size:.9rem}
+/* FOOTER */
+footer{border-top:1px solid var(--border);background:var(--card);padding:64px 0 32px;margin-top:40px}
+.footer-grid{display:grid;grid-template-columns:1.4fr repeat(4,1fr);gap:32px}
+@media(max-width:880px){.footer-grid{grid-template-columns:repeat(2,1fr)}}
+footer h4{font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:16px}
+footer a{display:block;color:var(--muted);text-decoration:none;font-size:.88rem;padding:5px 0;transition:color .15s}
+footer a:hover{color:var(--text)}
+.footer-bottom{margin-top:48px;padding-top:24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:.85rem;color:var(--muted)}
+/* TOAST */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--text);color:var(--bg);padding:12px 22px;border-radius:10px;font-size:.88rem;font-weight:600;opacity:0;transition:all .3s;z-index:200;pointer-events:none}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+/* PRICING */
+.price-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:34px;transition:all .25s;position:relative}
+.price-card.featured{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),var(--shadow-lg)}
+.price-card .plan-name{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--accent)}
+.price-card .amount{font-size:2.6rem;font-weight:800;letter-spacing:-.03em;margin:12px 0}
+.price-card .amount small{font-size:1rem;color:var(--muted);font-weight:500}
+.price-card ul{list-style:none;margin:20px 0}
+.price-card li{padding:7px 0;font-size:.9rem;color:var(--muted);display:flex;gap:10px}
+.price-card li::before{content:"✓";color:var(--emerald);font-weight:700}
+.billing-toggle{display:inline-flex;align-items:center;gap:12px;margin:0 auto 36px;font-size:.9rem;font-weight:600}
+.switch{width:46px;height:26px;border-radius:20px;background:var(--border);border:none;cursor:pointer;position:relative;transition:background .2s}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .2s}
+.switch.on{background:var(--emerald)}
+.switch.on::after{transform:translateX(20px)}
+/* SEARCH */
+#searchOverlay{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);z-index:150;display:none;padding:12vh 24px}
+#searchOverlay.open{display:block}
+.search-box{max-width:560px;margin:0 auto;background:var(--card);border-radius:16px;overflow:hidden;box-shadow:var(--shadow-lg);border:1px solid var(--border)}
+.search-box input{width:100%;padding:18px 22px;border:none;background:transparent;color:var(--text);font-size:1.1rem;outline:none;font-family:inherit;border-bottom:1px solid var(--border)}
+.search-results{max-height:50vh;overflow-y:auto;padding:8px}
+.sr-item{display:block;padding:12px 14px;border-radius:10px;text-decoration:none;color:var(--text)}
+.sr-item:hover{background:color-mix(in srgb,var(--text) 5%,transparent)}
+.sr-item .sr-type{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--accent)}
+.sr-item .sr-title{font-weight:600;font-size:.95rem}
+.breadcrumb{font-size:.82rem;color:var(--muted);margin-bottom:20px;display:flex;gap:8px;flex-wrap:wrap}
+.breadcrumb a{color:var(--muted);text-decoration:none}
+.breadcrumb a:hover{color:var(--accent)}
+.trust-panel{margin-top:28px;border:1px dashed var(--border);border-radius:12px;padding:16px 20px;font-size:.82rem;color:var(--muted);display:flex;gap:12px;align-items:flex-start}
+.trust-panel .tp-icon{color:var(--emerald);flex-shrink:0;margin-top:2px}
+.content-block{max-width:720px}
+.content-block h2{font-size:1.5rem;margin:40px 0 14px}
+.content-block p{margin-bottom:14px}
+.content-block ul{margin:0 0 14px 22px;color:var(--muted)}
+.content-block ul li{margin-bottom:8px}
+.formula{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 22px;font-family:ui-monospace,monospace;font-size:.92rem;margin:16px 0;color:var(--emerald);font-weight:600}
+.ad-slot{margin:40px auto;max-width:728px;height:90px;border:1px dashed var(--border);border-radius:12px;display:grid;place-items:center;font-size:.75rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+.legal-page{max-width:760px;margin:0 auto}
+.cta-band{background:linear-gradient(135deg,#111827,#1F2937);border-radius:20px;padding:64px 48px;text-align:center;color:#fff}
+.cta-band h2{color:#fff;margin-bottom:14px}
+.cta-band p{color:#9CA3AF;margin-bottom:28px;max-width:480px;margin-left:auto;margin-right:auto}
+.guide-item{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px 0;border-bottom:1px solid var(--border);text-decoration:none}
+.guide-item:hover h3{color:var(--accent)}
+.guide-item h3{color:var(--text);font-size:1.05rem;transition:color .15s}
+.guide-item span{font-size:.8rem;color:var(--muted);flex-shrink:0}
+.stat-hero{display:flex;gap:36px;flex-wrap:wrap;margin-top:48px}
+.fade-in{animation:fadeUp .5s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="container nav">
+    <a class="logo" href="#/"><span class="logo-mark">S</span>SellerMargin</a>
+    <nav class="nav-links">
+      <a href="#/">Home</a>
+      <a href="#/calculators">Calculators</a>
+      <div style="position:relative" id="mkWrap">
+        <a href="#/compare" id="mkNavLink">Marketplaces ▾</a>
+        <div id="mkDropdown" style="display:none;position:absolute;top:100%;left:0;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-lg);padding:8px;min-width:180px;z-index:50">
+          <a href="#/amazon" style="display:block;padding:10px 14px;border-radius:8px">Amazon</a>
+          <a href="#/ebay" style="display:block;padding:10px 14px;border-radius:8px">eBay</a>
+          <a href="#/shopify" style="display:block;padding:10px 14px;border-radius:8px">Shopify</a>
+          <a href="#/etsy" style="display:block;padding:10px 14px;border-radius:8px">Etsy</a>
+          <a href="#/walmart" style="display:block;padding:10px 14px;border-radius:8px">Walmart</a>
+        </div>
+      </div>
+      <a href="#/compare">Compare</a>
+      <a href="#/guides">Seller Guides</a>
+      <a href="#/about">About</a>
+      <a href="#/pricing">Pricing</a>
+    </nav>
+    <div class="nav-right">
+      <button class="icon-btn" onclick="toggleSearch()" title="Search" aria-label="Search">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      </button>
+      <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme" aria-label="Toggle theme" id="themeBtn">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4m11.4-11.4 1.4-1.4"/></svg>
+      </button>
+      <a href="#/calculators" class="btn btn-primary" style="padding:9px 18px;font-size:.85rem">Explore Tools</a>
+      <button class="icon-btn hamburger" onclick="toggleMobile()" aria-label="Menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#/" onclick="toggleMobile()">Home</a>
+    <a href="#/calculators" onclick="toggleMobile()">Calculators</a>
+    <a href="#/compare" onclick="toggleMobile()">Marketplace Comparison</a>
+    <a href="#/guides" onclick="toggleMobile()">Seller Guides</a>
+    <a href="#/pricing" onclick="toggleMobile()">Pricing</a>
+    <a href="#/about" onclick="toggleMobile()">About</a>
+    <a href="#/contact" onclick="toggleMobile()">Contact</a>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="logo" href="#/" style="margin-bottom:14px"><span class="logo-mark">S</span>SellerMargin</a>
+        <p style="font-size:.88rem;max-width:240px">Know Your Real Selling Profit. Calculate fees, margins and ROI across every major marketplace.</p>
+      </div>
+      <div>
+        <h4>Products</h4>
+        <a href="#/calculators">Profit Calculators</a>
+        <a href="#/amazon">Amazon Tools</a>
+        <a href="#/ebay">eBay Tools</a>
+        <a href="#/shopify">Shopify Tools</a>
+        <a href="#/compare">Comparison Tools</a>
+      </div>
+      <div>
+        <h4>Resources</h4>
+        <a href="#/guides">Seller Guides</a>
+        <a href="#/faq">FAQ</a>
+        <a href="#/methodology">Methodology</a>
+        <a href="#/fee-data">Fee Data</a>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <a href="#/about">About</a>
+        <a href="#/contact">Contact</a>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <a href="#/privacy">Privacy Policy</a>
+        <a href="#/terms">Terms</a>
+        <a href="#/disclaimer">Disclaimer</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© SellerMargin. All rights reserved.</span>
+      <span style="font-weight:600;color:var(--accent)">Know Your Real Selling Profit.</span>
+    </div>
+  </div>
+</footer>
+
+<div id="searchOverlay" onclick="if(event.target===this)toggleSearch()">
+  <div class="search-box">
+    <input id="searchInput" placeholder="Search tools, guides, marketplaces…" oninput="doSearch(this.value)">
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ================= FEE DATA (centralized — admin-updatable) ================= */
+const FEE_DATA = {
+  lastReviewed: "2025-06-15",
+  sources: {
+    amazon: "https://sell.amazon.com/pricing",
+    ebay: "https://www.ebay.com/help/selling/fees-credits-invoices/selling-fees?id=4364",
+    shopify: "https://www.shopify.com/pricing",
+    etsy: "https://www.etsy.com/legal/fees/",
+    walmart: "https://marketplace.walmart.com/pricing"
+  },
+  marketplaces: {
+    amazon:  { name:"Amazon",  referralPct:0.15, fixedFee:0,    fulfillmentPct:0.00, paymentPct:0,  paymentFixed:0,   categories:["Most categories 15%"] },
+    ebay:    { name:"eBay",    referralPct:0.135,fixedFee:0.30, fulfillmentPct:0,    paymentPct:0,  paymentFixed:0,   categories:["Most categories 13.25% + $0.30"] },
+    shopify: { name:"Shopify", referralPct:0,    fixedFee:0,    fulfillmentPct:0,    paymentPct:0.029,paymentFixed:0.30, categories:["Basic plan 2.9% + $0.30"] },
+    etsy:    { name:"Etsy",    referralPct:0.065,fixedFee:0.20, fulfillmentPct:0,    paymentPct:0.03, paymentFixed:0.25, categories:["Transaction 6.5% + $0.20, payment 3% + $0.25"] },
+    walmart: { name:"Walmart", referralPct:0.15, fixedFee:0,    fulfillmentPct:0,    paymentPct:0,  paymentFixed:0,   categories:["Referral fee 15%"] }
+  }
+};
+
+/* ================= CALCULATOR ENGINE (generic, reusable) ================= */
+function money(v){ if(!isFinite(v)) return "—"; const neg=v<0; return (neg?"-":"")+"$"+Math.abs(v).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function pct(v){ if(!isFinite(v)) return "—"; return v.toFixed(1)+"%"; }
+
+function buildCalculator(el, cfg){
+  el.innerHTML = `
+    <div class="calc-card">
+      <div class="cc-head"><h3>${cfg.title}</h3><span class="badge-live">Live</span></div>
+      ${cfg.fields.map(f=>`
+        <div class="field" id="fld-${f.id}">
+          <label>${f.label} ${f.tip?`<span class="tip" title="${f.tip}">?</span>`:""}</label>
+          <div class="input-wrap">${f.prefix?`<span class="prefix">${f.prefix}</span>`:""}
+            <input type="number" id="in-${f.id}" inputmode="decimal" placeholder="${f.placeholder||"0.00"}" min="0" step="any">
+            ${f.suffix?`<span class="suffix">${f.suffix}</span>`:""}
+          </div>
+          <div class="err-msg">Please enter a valid non-negative number.</div>
+        </div>`).join("")}
+      <div id="res-${cfg.id}"></div>
+      <div class="calc-actions">
+        ${cfg.button!==false?`<button class="btn btn-gold" onclick="runCalc('${cfg.id}')">${cfg.buttonText||"Calculate"}</button>`:""}
+        <button class="btn btn-outline" onclick="resetCalc('${cfg.id}')">Reset</button>
+        <button class="btn btn-outline" onclick="copyResult('${cfg.id}')">Copy Result</button>
+      </div>
+    </div>`;
+  window.__calcs = window.__calcs || {};
+  window.__calcs[cfg.id] = cfg;
+  if(cfg.instant){
+    cfg.fields.forEach(f=> el.querySelector("#in-"+f.id).addEventListener("input",()=>runCalc(cfg.id,true)));
+    el.querySelector(`#res-${cfg.id}`).innerHTML = emptyState();
+  }
+}
+function emptyState(){ return `<div class="results" style="grid-template-columns:1fr"><div class="result-main" style="background:var(--bg);border-style:dashed"><span style="color:var(--muted);font-size:.9rem">Enter your numbers to see your estimated profit.</span></div></div>`; }
+function runCalc(id, silent){
+  const cfg = window.__calcs[id]; const vals={}; let hasError=false, anyValue=false;
+  cfg.fields.forEach(f=>{
+    const inp=document.getElementById("in-"+f.id); const raw=inp.value.trim();
+    const fld=document.getElementById("fld-"+f.id);
+    if(raw===""){ vals[f.id]=0; fld.classList.remove("error"); return; }
+    const v=parseFloat(raw); anyValue=true;
+    if(isNaN(v)||v<0){ fld.classList.add("error"); hasError=true; } else { vals[f.id]=v; fld.classList.remove("error"); }
+  });
+  const resEl=document.getElementById("res-"+id);
+  if(hasError){ if(!silent) toast("Please fix the highlighted fields."); return; }
+  if(!anyValue){ resEl.innerHTML=emptyState(); return; }
+  const out = cfg.compute(vals);
+  window.__lastResults = window.__lastResults||{}; window.__lastResults[id]=out;
+  resEl.innerHTML = `<div class="results">${out.map(r=> r.main
+    ? `<div class="result-main"><div class="rm-label">${r.label}</div><div class="rm-value ${r.neg?"":""}" style="${r.neg?'color:#DC2626':''}">${r.value}</div></div>`
+    : `<div class="result-mini ${r.neg?'neg':''}"><div class="rm-label">${r.label}</div><div class="rm-value">${r.value}</div></div>`
+  ).join("")}</div>`;
+  if(!silent && !window.__calcFired){ window.__calcFired=true; /* calculator_completed event hook */ }
+}
+function resetCalc(id){ document.querySelectorAll(`#fld-${id} input, input[id^="in-"]`).forEach(i=>{}); 
+  const cfg=window.__calcs[id];
+  cfg.fields.forEach(f=>{ document.getElementById("in-"+f.id).value=""; document.getElementById("fld-"+f.id).classList.remove("error"); });
+  document.getElementById("res-"+id).innerHTML = cfg.instant? emptyState():"";
+  toast("Calculator reset.");
+}
+function copyResult(id){
+  const out=window.__lastResults&&window.__lastResults[id];
+  if(!out){ toast("Run the calculation first."); return; }
+  const text = out.map(r=>`${r.label}: ${r.value}`).join(" | ");
+  navigator.clipboard.writeText(text).then(()=>toast("Result copied to clipboard."));
+}
+
+/* ================= TOOL DEFINITIONS ================= */
+const TOOLS = {
+  "ecommerce-profit-calculator": { cat:"Profit & Pricing", title:"Ecommerce Profit Calculator", desc:"Calculate your estimated net profit after product cost, shipping, fees and advertising.", fields:[
+    {id:"cost",label:"Product Cost",prefix:"$",tip:"Your total cost to acquire or make the product."},
+    {id:"price",label:"Selling Price",prefix:"$",tip:"The price the customer pays."},
+    {id:"shipping",label:"Shipping Cost",prefix:"$",tip:"Outbound shipping to the customer."},
+    {id:"fees",label:"Marketplace Fees",prefix:"$",tip:"Total marketplace and payment fees."},
+    {id:"ads",label:"Advertising Cost",prefix:"$",tip:"Ad spend allocated per unit sold."},
+    {id:"other",label:"Other Expenses",prefix:"$",tip:"Packaging, returns, labor, etc."}
+  ], compute:v=>{
+    const revenue=v.price, totalCosts=v.cost+v.shipping+v.fees+v.ads+v.other;
+    const profit=revenue-totalCosts, margin=revenue>0?profit/revenue*100:NaN, roi=v.cost>0?profit/v.cost*100:NaN, breakeven=totalCosts;
+    return [
+      {label:"Net Profit",value:money(profit),main:true,neg:profit<0},
+      {label:"Profit Margin",value:pct(margin),neg:margin<0},
+      {label:"ROI",value:pct(roi),neg:roi<0},
+      {label:"Total Costs",value:money(totalCosts)},
+      {label:"Total Fees",value:money(v.fees)},
+      {label:"Break-Even Price",value:money(breakeven)}
+    ];
+  }},
+  "profit-margin-calculator": { cat:"Profit & Pricing", title:"Profit Margin Calculator", desc:"Know exactly how much of every sale you keep.", fields:[
+    {id:"cost",label:"Cost of Goods",prefix:"$"},
+    {id:"price",label:"Selling Price",prefix:"$"}
+  ], compute:v=>{
+    const profit=v.price-v.cost, margin=v.price>0?profit/v.price*100:NaN;
+    return [{label:"Net Profit",value:money(profit),main:true,neg:profit<0},{label:"Profit Margin",value:pct(margin),neg:margin<0},{label:"Markup",value:pct(v.cost>0?profit/v.cost*100:NaN)},{label:"Cost Ratio",value:pct(v.price>0?v.cost/v.price*100:NaN)}];
+  }},
+  "markup-calculator": { cat:"Profit & Pricing", title:"Markup Calculator", desc:"Convert between margin and markup in seconds.", fields:[
+    {id:"cost",label:"Cost",prefix:"$"},
+    {id:"markup",label:"Markup %",suffix:"%"}
+  ], compute:v=>{
+    const price=v.cost*(1+v.markup/100), profit=price-v.cost, margin=price>0?profit/price*100:NaN;
+    return [{label:"Selling Price",value:money(price),main:true},{label:"Gross Profit",value:money(profit)},{label:"Profit Margin",value:pct(margin)},{label:"Markup",value:pct(v.markup)}];
+  }},
+  "break-even-calculator": { cat:"Profit & Pricing", title:"Break-Even Calculator", desc:"Find the minimum price you need to stay profitable.", fields:[
+    {id:"fixed",label:"Fixed Costs",prefix:"$",tip:"Costs that don't change with units sold."},
+    {id:"price",label:"Price per Unit",prefix:"$"},
+    {id:"varcost",label:"Variable Cost per Unit",prefix:"$",tip:"Cost to produce/ship one unit."}
+  ], compute:v=>{
+    const cm=v.price-v.varcost, beUnits=cm>0?v.fixed/cm:Infinity, beRevenue=isFinite(beUnits)?beUnits*v.price:NaN;
+    return [{label:"Break-Even Units",value:isFinite(beUnits)?beUnits.toFixed(1):"—",main:true},{label:"Break-Even Revenue",value:money(beRevenue)},{label:"Contribution Margin",value:money(cm),neg:cm<0},{label:"Contribution Ratio",value:pct(v.price>0?cm/v.price*100:NaN)}];
+  }},
+  "selling-price-calculator": { cat:"Profit & Pricing", title:"Selling Price Calculator", desc:"Set a price that hits your target margin.", fields:[
+    {id:"cost",label:"Total Cost per Unit",prefix:"$"},
+    {id:"margin",label:"Target Margin",suffix:"%"}
+  ], compute:v=>{
+    const price=v.margin>=100?NaN:v.cost/(1-v.margin/100), profit=price-v.cost;
+    return [{label:"Required Selling Price",value:money(price),main:true},{label:"Gross Profit",value:money(profit)},{label:"Markup on Cost",value:pct(v.cost>0?profit/v.cost*100:NaN)}];
+  }},
+  "ebay-profit-calculator": { cat:"eBay", title:"eBay Profit Calculator", desc:"Calculate your estimated eBay profit after product cost, shipping, eBay fees and advertising.", fields:[
+    {id:"cost",label:"Product Cost",prefix:"$"},
+    {id:"price",label:"Selling Price",prefix:"$"},
+    {id:"shipping",label:"Shipping Cost",prefix:"$"},
+    {id:"ads",label:"Advertising Cost",prefix:"$",tip:"Promoted listings % or per-unit ad cost."},
+    {id:"other",label:"Other Expenses",prefix:"$"}
+  ], feeKey:"ebay", compute:v=>{
+    const f=FEE_DATA.marketplaces.ebay;
+    const fees=v.price*f.referralPct+f.fixedFee+v.ads+v.other;
+    const profit=v.price-v.cost-v.shipping-fees;
+    const margin=v.price>0?profit/v.price*100:NaN, roi=v.cost>0?profit/v.cost*100:NaN;
+    return [{label:"Net Profit",value:money(profit),main:true,neg:profit<0},{label:"Profit Margin",value:pct(margin),neg:margin<0},{label:"ROI",value:pct(roi),neg:roi<0},{label:"eBay Fees",value:money(v.price*f.referralPct+f.fixedFee)},{label:"Total Costs",value:money(v.cost+v.shipping+fees)},{label:"Break-Even Price",value:money(v.cost+v.shipping+v.ads+v.other+f.fixedFee/(1-f.referralPct))}];
+  }},
+  "amazon-fba-profit-calculator": { cat:"Amazon", title:"Amazon FBA Profit Calculator", desc:"Estimate your Amazon FBA profit after referral fees and fulfillment costs.", fields:[
+    {id:"cost",label:"Product Cost",prefix:"$"},
+    {id:"price",label:"Selling Price",prefix:"$"},
+    {id:"fba",label:"FBA Fulfillment Fee",prefix:"$",tip:"Amazon's per-unit fulfillment fee."},
+    {id:"ads",label:"Advertising Cost",prefix:"$"},
+    {id:"other",label:"Other Expenses",prefix:"$"}
+  ], feeKey:"amazon", compute:v=>{
+    const f=FEE_DATA.marketplaces.amazon;
+    const referral=v.price*f.referralPct, profit=v.price-v.cost-v.fba-referral-v.ads-v.other;
+    const margin=v.price>0?profit/v.price*100:NaN, roi=v.cost>0?profit/v.cost*100:NaN;
+    return [{label:"Net Profit",value:money(profit),main:true,neg:profit<0},{label:"Profit Margin",value:pct(margin),neg:margin<0},{label:"ROI",value:pct(roi),neg:roi<0},{label:"Referral Fee",value:money(referral)},{label:"Total Costs",value:money(v.cost+v.fba+referral+v.ads+v.other)},{label:"Break-Even Price",value:money((v.cost+v.fba+v.ads+v.other)/(1-f.referralPct))}];
+  }},
+  "amazon-acos-calculator": { cat:"Amazon", title:"Amazon ACoS Calculator", desc:"Measure your Advertising Cost of Sales.", fields:[
+    {id:"adspend",label:"Ad Spend",prefix:"$"},
+    {id:"adsales",label:"Ad Revenue",prefix:"$"}
+  ], compute:v=>{
+    const acos=v.adsales>0?v.adspend/v.adsales*100:NaN;
+    const breakevenAcos=v.price_placeholder;
+    return [{label:"ACoS",value:pct(acos),main:true},{label:"Ad Revenue per $1 Spent",value:money(v.adspend>0?v.adsales/v.adspend:NaN)},{label:"Ad Profit",value:money(v.adsales-v.adspend),neg:v.adsales-v.adspend<0}];
+  }},
+  "ecommerce-roas-calculator": { cat:"Marketing & Growth", title:"Ecommerce ROAS Calculator", desc:"See exactly what your ad spend returns.", fields:[
+    {id:"adspend",label:"Ad Spend",prefix:"$"},
+    {id:"revenue",label:"Revenue from Ads",prefix:"$"}
+  ], compute:v=>{
+    const roas=v.adspend>0?v.revenue/v.adspend:NaN, profit=v.revenue-v.adspend;
+    return [{label:"ROAS",value:isFinite(roas)?roas.toFixed(2)+"×":"—",main:true,neg:roas<1},{label:"Return %",value:pct(roas*100),neg:roas<1},{label:"Gross Return",value:money(profit),neg:profit<0}];
+  }},
+  "break-even-roas-calculator": { cat:"Marketing & Growth", title:"Break-Even ROAS Calculator", desc:"The minimum ROAS where ads stop losing money.", fields:[
+    {id:"margin",label:"Profit Margin Before Ads",suffix:"%",tip:"Margin as a decimal percent of revenue."}
+  ], compute:v=>{
+    const be=v.margin>0?100/v.margin:NaN;
+    return [{label:"Break-Even ROAS",value:isFinite(be)?be.toFixed(2)+"×":"—",main:true},{label:"Margin",value:pct(v.margin)}];
+  }},
+  "ecommerce-cac-calculator": { cat:"Marketing & Growth", title:"Ecommerce CAC Calculator", desc:"Your true customer acquisition cost.", fields:[
+    {id:"spend",label:"Total Marketing Spend",prefix:"$"},
+    {id:"customers",label:"New Customers Acquired"}
+  ], compute:v=>{
+    const cac=v.customers>0?v.spend/v.customers:NaN;
+    return [{label:"Customer Acquisition Cost",value:money(cac),main:true},{label:"Customers",value:v.customers||"—"},{label:"Spend per $1 of CAC",value:money(v.customers>0?v.spend/v.customers:NaN)}];
+  }},
+  "ecommerce-ltv-calculator": { cat:"Marketing & Growth", title:"Ecommerce LTV Calculator", desc:"How much a customer is worth over time.", fields:[
+    {id:"aov",label:"Average Order Value",prefix:"$"},
+    {id:"orders",label:"Orders per Year"},
+    {id:"years",label:"Customer Lifespan (years)"},
+    {id:"margin",label:"Profit Margin",suffix:"%"}
+  ], compute:v=>{
+    const ltv=v.aov*v.orders*v.years*(v.margin/100);
+    return [{label:"Customer LTV (profit)",value:money(ltv),main:true},{label:"Lifetime Revenue",value:money(v.aov*v.orders*v.years)},{label:"Annual Profit per Customer",value:money(v.aov*v.orders*v.margin/100)}];
+  }}
+};
+
+/* ================= COMPARISON ENGINE ================= */
+function computeMarketplace(key, v){
+  const f=FEE_DATA.marketplaces[key];
+  const marketplaceFee = v.price*f.referralPct + f.fixedFee;
+  const paymentFee = v.price*f.paymentPct + f.paymentFixed;
+  const fees = marketplaceFee + paymentFee;
+  const totalCosts = v.cost + v.shipping + v.packaging + v.ads + v.returns + v.other + fees;
+  const profit = v.price - totalCosts;
+  const margin = v.price>0 ? profit/v.price*100 : NaN;
+  const roi = v.cost>0 ? profit/v.cost*100 : NaN;
+  const denom = 1 - f.referralPct - f.paymentPct;
+  const breakeven = denom>0 ? (v.cost+v.shipping+v.packaging+v.returns+v.other+f.fixedFee+f.paymentFixed)/denom : NaN;
+  const maxAds = profit + v.ads;
+  return { name:f.name, profit, margin, roi, fees, totalCosts, breakeven, maxAds };
+}
+function renderComparison(el, selected){
+  const v = {}; ["cost","price","shipping","packaging","ads","returns","other"].forEach(id=>{ v[id]=parseFloat(document.getElementById("cmp-"+id).value)||0; });
+  const rows = selected.map(k=>computeMarketplace(k,v));
+  el.innerHTML = `
+    <div class="table-wrap"><table>
+      <thead><tr><th>Marketplace</th><th>Net Profit</th><th>Margin</th><th>ROI</th><th>Total Fees</th><th>Total Costs</th><th>Break-Even Price</th><th>Max Ad Spend</th></tr></thead>
+      <tbody>${rows.map(r=>`
+        <tr>
+          <td><strong>${r.name}</strong></td>
+          <td class="num ${r.profit<0?'neg':''}"><span class="${r.profit>=0?'pos':'neg'}">${money(r.profit)}</span></td>
+          <td class="num">${pct(r.margin)}</td>
+          <td class="num">${pct(r.roi)}</td>
+          <td class="num">${money(r.fees)}</td>
+          <td class="num">${money(r.totalCosts)}</td>
+          <td class="num">${money(r.breakeven)}</td>
+          <td class="num">${money(r.maxAds)}</td>
+        </tr>`).join("")}
+      </tbody>
+    </table></div>
+    <div class="trust-panel"><span class="tp-icon">ⓘ</span><div><strong>Calculation Transparency.</strong> Calculations are based on the inputs you provide and the fee assumptions displayed above. Last Fee Data Review: ${FEE_DATA.lastReviewed}. Source: Official marketplace documentation. Fees vary by category and plan — verify current rates before making decisions.</div></div>`;
+}
+
+/* ================= GUIDES DATA ================= */
+const GUIDES = [
+  {title:"How to Calculate Ecommerce Profit", cat:"Fundamentals"},
+  {title:"Profit Margin vs Markup: What's the Difference?", cat:"Pricing"},
+  {title:"How eBay Seller Fees Work (2025)", cat:"eBay"},
+  {title:"Amazon FBA Fees Explained", cat:"Amazon"},
+  {title:"How to Calculate Break-Even ROAS", cat:"Advertising"},
+  {title:"ROAS vs ROI for Ecommerce Sellers", cat:"Advertising"},
+  {title:"How Much Profit Should an Ecommerce Product Make?", cat:"Pricing"},
+  {title:"How Marketplace Fees Affect Product Pricing", cat:"Marketplaces"},
+  {title:"Shopify Costs: The Complete Breakdown", cat:"Shopify"},
+  {title:"Ecommerce Accounting Basics for Sellers", cat:"Finance"}
+];
+
+const FAQS = [
+  {q:"How accurate are SellerMargin calculations?", a:"Calculations are mathematically exact based on the inputs you provide and the fee rates in our centralized fee database (last reviewed "+FEE_DATA.lastReviewed+"). Marketplace fees change over time and vary by category, so always verify current rates on official marketplace documentation."},
+  {q:"Which marketplaces are supported?", a:"We currently support Amazon, eBay, Shopify, Etsy and Walmart Marketplace, with TikTok Shop support planned. Each marketplace calculator uses fee structures appropriate for US sellers, with UK, CA and AU support on the roadmap."},
+  {q:"What's the difference between profit margin and markup?", a:"Margin is profit as a percentage of the selling price; markup is profit as a percentage of cost. A 25% margin equals a 33.3% markup. Our calculators show both so you never confuse them."},
+  {q:"What is break-even ROAS?", a:"Break-even ROAS is the return on ad spend at which advertising neither makes nor loses money. It's calculated as 1 ÷ your pre-ad profit margin. Above it, ads are profitable; below it, they lose money on every sale."},
+  {q:"Is SellerMargin free to use?", a:"Yes — all core calculators are free. Professional and Business plans add saved scenarios, bulk comparisons, fee-change alerts and team features."},
+  {q:"Where does your fee data come from?", a:"From official marketplace pricing documentation (see our Fee Data page for sources and review dates). We never claim real-time accuracy — fee data is reviewed and updated regularly."},
+  {q:"Do you store my calculation inputs?", a:"No. Calculations run entirely in your browser. Nothing you enter is sent to a server. Saved scenarios (Pro plan) are stored in your private account only."},
+  {q:"Can I use SellerMargin on mobile?", a:"Absolutely. The entire platform is mobile-first, designed for one-handed use with large inputs and instantly visible results."}
+];
+
+/* ================= SEARCH INDEX ================= */
+const SEARCH_INDEX = [
+  ...Object.entries(TOOLS).map(([slug,t])=>({type:"Tool", title:t.title, url:"#/calculator/"+slug, keywords:(t.title+" "+t.cat+" "+t.desc).toLowerCase()})),
+  {type:"Tool", title:"Marketplace Profit Comparison", url:"#/compare", keywords:"compare marketplaces amazon ebay shopify etsy walmart side by side"},
+  ...Object.keys(FEE_DATA.marketplaces).map(k=>({type:"Category", title:FEE_DATA.marketplaces[k].name+" Tools", url:"#/"+k, keywords:k+" marketplace seller fees profit"})),
+  ...GUIDES.map(g=>({type:"Guide", title:g.title, url:"#/guides", keywords:g.title.toLowerCase()})),
+  {type:"Page", title:"Pricing", url:"#/pricing", keywords:"pricing plans professional business free"},
+  {type:"Page", title:"Methodology", url:"#/methodology", keywords:"how calculations work methodology formula"},
+  {type:"Page", title:"Fee Data", url:"#/fee-data", keywords:"fee data sources review dates marketplace fees"},
+  {type:"Page", title:"FAQ", url:"#/faq", keywords:"faq questions help"}
+];
+
+/* ================= PAGES ================= */
+function pageHome(){
+  return `
+  <div class="hero"><div class="container hero-grid">
+    <div class="fade-in">
+      <span class="eyebrow">Ecommerce Profit Intelligence</span>
+      <h1>Know Your <span class="gold">Real</span> Selling Profit.</h1>
+      <p class="hero-sub">Calculate fees, costs, margins, ROI and break-even prices across the world's leading ecommerce marketplaces.</p>
+      <div class="hero-ctas">
+        <a href="#/calculator/ecommerce-profit-calculator" class="btn btn-primary">Calculate Your Profit →</a>
+        <a href="#/calculators" class="btn btn-outline">Explore All Tools</a>
+      </div>
+      <div class="stat-hero">
+        <div class="proof-item"><b data-count="12">0</b><span>Premium tools</span></div>
+        <div class="proof-item"><b data-count="5">0</b><span>Marketplaces</span></div>
+        <div class="proof-item"><b data-count="100">0</b><span>% Free core tools</span></div>
+      </div>
+    </div>
+    <div class="fade-in" id="heroCalc" style="animation-delay:.15s"></div>
+  </div></div>
+
+  <section><div class="container">
+    <div class="section-head"><span class="eyebrow" style="justify-content:center">Why Sellers Use SellerMargin</span>
+      <h2>Stop Guessing. Start Knowing Your Numbers.</h2>
+      <p>Marketplace fees, shipping, advertising and product costs can quickly turn a profitable sale into a loss. SellerMargin gives you a clear view of what you actually make — before you sell.</p></div>
+    <div class="cards-grid">
+      ${[
+        ["◈","Know Your Profit","See your estimated net profit after costs and fees."],
+        ["△","Understand Your Margin","Know exactly how much of every sale you keep."],
+        ["◉","Find Your Break-Even","Calculate the minimum price you need to stay profitable."],
+        ["⇄","Compare Marketplaces","See how the same product performs across different platforms."]
+      ].map(c=>`<div class="card"><div class="card-icon">${c[0]}</div><h3>${c[1]}</h3><p>${c[2]}</p></div>`).join("")}
+    </div>
+  </div></section>
+
+  <section style="background:var(--card);border-top:1px solid var(--border);border-bottom:1px solid var(--border)"><div class="container">
+    <div class="two-col">
+      <div><span class="eyebrow">Signature Tool</span>
+        <h2>One Product. Multiple Marketplaces. One Clear Answer.</h2>
+        <p style="margin:16px 0 24px">Enter your numbers once. See estimated profit, margin, ROI and break-even price across Amazon, eBay, Shopify, Etsy and Walmart — side by side.</p>
+        <a href="#/compare" class="btn btn-gold">Compare Marketplaces →</a>
+      </div>
+      <div class="table-wrap"><table style="min-width:0">
+        <thead><tr><th>Marketplace</th><th>Net Profit</th><th>Margin</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Amazon</strong></td><td class="num">$11.20</td><td class="num">22.4%</td></tr>
+          <tr><td><strong>eBay</strong></td><td class="num pos">$13.10</td><td class="num">26.2%</td></tr>
+          <tr><td><strong>Shopify</strong></td><td class="num pos">$16.40</td><td class="num">32.8%</td></tr>
+        </tbody></table></div>
+    </div>
+  </div></section>
+
+  <section><div class="container">
+    <div class="section-head"><span class="eyebrow" style="justify-content:center">How It Works</span>
+      <h2>Tools That Turn Costs Into Clarity.</h2></div>
+    <div class="steps" style="max-width:640px;margin:0 auto">
+      ${[
+        ["Enter your numbers","Product cost, price, shipping, ads and fees — the calculator does the rest, instantly."],
+        ["See your real profit","Net profit, margin, ROI and break-even price, computed with transparent formulas."],
+        ["Compare and decide","Test the same product across marketplaces and choose where it wins."],
+        ["Sell with confidence","Know the number before you make the sale."]
+      ].map((s,i)=>`<div class="step"><div class="step-num">${i+1}</div><div><h3>${s[0]}</h3><p>${s[1]}</p></div></div>`).join("")}
+    </div>
+  </div></section>
+
+  <section style="padding-top:0"><div class="container">
+    <div class="section-head"><h2>Powerful Tools for Smarter Selling</h2><p>Everything you need to calculate, compare and optimize ecommerce profitability.</p></div>
+    <div class="cards-grid">${directoryCards()}</div>
+    <div style="text-align:center;margin-top:36px"><a href="#/calculators" class="btn btn-outline">View All ${Object.keys(TOOLS).length}+ Tools →</a></div>
+  </div></section>
+
+  <section><div class="container">
+    <div class="cta-band"><h2>Before You Sell, Know What You Keep.</h2>
+      <p>Fees change. Your profit shouldn't be a surprise. Start calculating in seconds — no account required.</p>
+      <a href="#/calculator/ecommerce-profit-calculator" class="btn btn-gold" style="font-size:1.05rem;padding:15px 34px">Start Calculating</a></div>
+  </div></section>`;
+}
+function directoryCards(){
+  const groups = {};
+  Object.entries(TOOLS).forEach(([slug,t])=>{ (groups[t.cat]=groups[t.cat]||[]).push({slug,...t}); });
+  return Object.entries(groups).map(([cat,items])=>`
+    <div class="card"><div class="card-icon">◈</div><h3>${cat}</h3><p>${items.length} tools</p>
+    ${items.slice(0,4).map(i=>`<a class="tool-link" href="#/calculator/${i.slug}">${i.title} →</a>`).join("<br>")}</div>`).join("");
+}
+function pageCalculators(){
+  return `<section><div class="container">
+    <div class="breadcrumb"><a href="#/">Home</a> / <span>Calculators</span></div>
+    <div class="section-head" style="margin-bottom:36px"><h1 style="font-size:clamp(1.9rem,4vw,2.6rem)">Powerful Tools for Smarter Selling</h1>
+    <p>Everything you need to calculate, compare and optimize ecommerce profitability. Free, instant, mobile-friendly.</p></div>
+    <div class="cards-grid">${directoryCards()}</div>
+    <div class="ad-slot">Advertisement — reserved slot (728×90)</div>
+  </div></section>`;
+}
+function pageTool(slug){
+  const t = TOOLS[slug]; if(!t) return page404();
+  const extra = t.feeKey ? `<div class="trust-panel"><span class="tp-icon">ⓘ</span><div><strong>Calculation Transparency.</strong> Fees use our centralized rate card (last reviewed ${FEE_DATA.lastReviewed}): ${FEE_DATA.marketplaces[t.feeKey].categories[0]}. Source: <a href="${FEE_DATA.sources[t.feeKey]}" target="_blank" style="color:var(--accent)">official marketplace documentation</a>.</div></div>` : "";
+  const content = toolContent[slug] || "";
+  return `<section><div class="container">
+    <div class="breadcrumb"><a href="#/">Home</a> / <a href="#/calculators">Calculators</a> / <span>${t.title}</span></div>
+    <div class="two-col" style="align-items:start">
+      <div>
+        <h1 style="font-size:clamp(1.8rem,4vw,2.5rem);margin-bottom:12px">${t.title}</h1>
+        <p style="margin-bottom:24px;font-size:1.05rem">${t.desc}</p>
+        <div id="toolCalc"></div>
+        ${extra}
+      </div>
+      <div class="content-block">
+        ${content}
+        <div class="ad-slot" style="margin:32px 0">Advertisement</div>
+        <h2>Frequently Asked Questions</h2>
+        <div id="toolFaq">${miniFaq(t)}</div>
+        <h2>Related Tools</h2>
+        <ul>${relatedTools(slug).map(r=>`<li><a href="#/calculator/${r.slug}" style="color:var(--accent)">${r.title}</a></li>`).join("")}</ul>
+        <a href="#/compare" class="btn btn-outline" style="margin-top:16px">Compare All Marketplaces →</a>
+      </div>
+    </div>
+  </div></section>`;
+}
+function relatedTools(slug){
+  const t=TOOLS[slug];
+  return Object.entries(TOOLS).filter(([s,x])=>s!==slug && (x.cat===t.cat || ["Profit & Pricing","Marketing & Growth"].includes(x.cat))).slice(0,4)
+    .map(([s,x])=>({slug:s,title:x.title}));
+}
+function miniFaq(t){
+  const generic=[
+    {q:"Is this calculator free?", a:"Yes — all SellerMargin core calculators are completely free with no account required."},
+    {q:"How is my result calculated?", a:"Your result is computed instantly in your browser from the inputs you provide. Formulas are shown transparently in the explanation on this page."},
+    {q:"Can I trust the fee rates used?", a:"Fee rates come from our centralized fee database reviewed on "+FEE_DATA.lastReviewed+" against official marketplace documentation. Rates vary by category and change over time."}
+  ];
+  return generic.map(f=>faqItem(f.q,f.a)).join("");
+}
+function faqItem(q,a){
+  return `<div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">${q}<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button><div class="faq-a"><p>${a}</p></div></div>`;
+}
+function toggleFaq(btn){
+  const item=btn.parentElement, a=item.querySelector(".faq-a"), open=item.classList.contains("open");
+  item.parentElement.querySelectorAll(".faq-item.open").forEach(i=>{i.classList.remove("open");i.querySelector(".faq-a").style.maxHeight="0";});
+  if(!open){ item.classList.add("open"); a.style.maxHeight=a.scrollHeight+"px"; }
+}
+
+function pageCompare(){
+  const fields=[["cost","Product Cost","$"],["price","Selling Price","$"],["shipping","Shipping Cost","$"],["packaging","Packaging","$"],["ads","Advertising Cost","$"],["returns","Returns Allowance","$"],["other","Other Expenses","$"]];
+  return `<section><div class="container">
+    <div class="breadcrumb"><a href="#/">Home</a> / <span>Marketplace Comparison</span></div>
+    <div class="section-head" style="margin-bottom:36px">
+      <span class="eyebrow" style="justify-content:center">Signature Tool</span>
+      <h1 style="font-size:clamp(1.9rem,4vw,2.7rem)">Marketplace Profit Comparison</h1>
+      <p>Enter your numbers once. Compare estimated profitability across every major marketplace. We show the numbers — you make the call.</p></div>
+    <div class="calc-card" style="max-width:760px;margin:0 auto 32px">
+      <div class="cc-head"><h3>Your Product</h3><span class="badge-live">Live Comparison</span></div>
+      ${fields.map(f=>`<div class="field"><label>${f[1]}</label><div class="input-wrap"><span class="prefix">${f[2]}</span><input type="number" id="cmp-${f[0]}" inputmode="decimal" placeholder="0.00" value="${{cost:"18",price:"49.99",shipping:"5",packaging:"1",ads:"4",returns:"2",other:"0.5"}[f[0]]||""}" oninput="updateCompare()"></div></div>`).join("")}
+      <label style="font-size:.82rem;font-weight:600;color:var(--muted)">Select marketplaces to compare</label>
+      <div class="mk-select" id="cmpChips">${Object.entries(FEE_DATA.marketplaces).map(([k,m],i)=>`<button class="mk-chip ${i<5?"active":""}" data-k="${k}" onclick="toggleChip(this)">${m.name}</button>`).join("")}</div>
+    </div>
+    <div id="cmpResults" style="max-width:960px;margin:0 auto"></div>
+    <div class="content-block" style="margin:48px auto 0">
+      <h2>How the comparison works</h2>
+      <p>Each marketplace applies its own fee structure to your selling price: referral/transaction fees (percentage plus any fixed per-order fee) and payment processing fees. We subtract those fees plus all your entered costs from the selling price to estimate net profit, margin, ROI and break-even price.</p>
+      <div class="formula">Net Profit = Price − Product Cost − Shipping − Packaging − Ads − Returns − Other − Marketplace Fees − Payment Fees</div>
+      <p>Maximum ad spend shows the total advertising budget per unit at which you'd still break even. No universal "best marketplace" exists — the right answer depends on your product, category fees, fulfillment costs and traffic strategy.</p>
+    </div>
+  </div></section>`;
+}
+function toggleChip(btn){ btn.classList.toggle("active"); updateCompare(); }
+function updateCompare(){
+  const sel=[...document.querySelectorAll("#cmpChips .mk-chip.active")].map(b=>b.dataset.k);
+  renderComparison(document.getElementById("cmpResults"), sel.length?sel:["amazon"]);
+}
+
+const SECTION_CONTENT = {
+  amazon:{name:"Amazon",desc:"FBA profit, referral fees, ROI, ACoS and break-even tools for Amazon sellers."},
+  ebay:{name:"eBay",desc:"Fee, profit, ROI and break-even calculators built for eBay sellers."},
+  shopify:{name:"Shopify",desc:"Profit, fee, break-even and ROAS tools for Shopify store owners."},
+  etsy:{name:"Etsy",desc:"Profit intelligence for Etsy sellers, including transaction and payment fees."},
+  walmart:{name:"Walmart",desc:"Profitability tools for Walmart Marketplace sellers."}
+};
+function pageMarketplace(key){
+  const s=SECTION_CONTENT[key]; if(!s) return page404();
+  const tools=Object.entries(TOOLS).filter(([_,t])=>t.cat===s.name);
+  return `<section><div class="container">
+    <div class="breadcrumb"><a href="#/">Home</a> / <span>${s.name}</span></div>
+    <div style="max-width:640px;margin-bottom:40px"><h1 style="font-size:clamp(1.9rem,4vw,2.6rem);margin-bottom:12px">${s.name} Seller Tools</h1><p style="font-size:1.05rem">${s.desc}</p></div>
+    <div class="cards-grid">${tools.length?tools.map(([slug,t])=>`<div class="card"><div class="card-icon">◈</div><h3>${t.title}</h3><p>${t.desc}</p><a class="tool-link" href="#/calculator/${slug}">Open Tool →</a></div>`).join(""):`<p style="grid-column:1/-1">Tools for ${s.name} are in development. Use the <a href="#/compare" style="color:var(--accent)">Marketplace Comparison</a> meanwhile.</p>`}</div>
+    <div style="margin-top:40px"><a href="#/compare" class="btn btn-gold">Compare ${s.name} vs Other Marketplaces →</a></div>
+  </div></section>`;
+}
+
+function pageGuides(){
+  return `<section><div class="container" style="max-width:820px">
+    <div class="breadcrumb"><a href="#/">Home</a> / <span>Seller Guides</span></div>
+    <h1 style="margin-bottom:12px">Seller Guides</h1>
+    <p style="margin-bottom:36px;font-size:1.05rem">Practical, numbers-first education for ecommerce sellers.</p>
+    ${GUIDES.map(g=>`<a class="guide-item" href="#/guide"><div><h3>${g.title}</h3><p style="font-size:.85rem">${g.cat}</p></div><span>Read →</span></a>`).join("")}
+  </div></section>`;
+}
+function pagePricing(){
+  const plans=[
+    {name:"Free",m:0,y:0,feat:["All core calculators","Marketplace comparison","No account required","Instant results"],cta:"Start Free",featured:false},
+    {name:"Professional",m:12,y:9,feat:["Everything in Free","Saved scenarios & history","Fee-change alerts","Bulk product comparison","Priority support"],cta:"Go Professional",featured:true},
+    {name:"Business",m:39,y:29,feat:["Everything in Professional","Team workspaces","API access","Custom fee overrides","Agency reporting","Dedicated support"],cta:"Contact Sales",featured:false}
+  ];
+  return `<section><div class="container">
+    <div class="section-head"><h1 style="font-size:clamp(1.9rem,4vw,2.7rem)">Simple Pricing, Serious Tools</h1><p>Start free. Upgrade when your business grows.</p>
+    <div class="billing-toggle"><span>Monthly</span><button class="switch" id="billSwitch" onclick="this.classList.toggle('on');renderPricing()"></button><span style="color:var(--emerald)">Yearly (−25%)</span></div></div>
+    <div id="priceGrid" class="cards-grid"></div>
+  </div></section>`;
+}
+function renderPricing(){
+  const yearly=document.getElementById("billSwitch").classList.contains("on");
+  const plans=[
+    {name:"Free",m:0,y:0,feat:["All core calculators","Marketplace comparison","No account required","Instant results"],cta:"Start Free"},
+    {name:"Professional",m:12,y:9,feat:["Everything in Free","Saved scenarios & history","Fee-change alerts","Bulk product comparison","Priority support"],cta:"Go Professional",featured:true},
+    {name:"Business",m:39,y:29,feat:["Everything in Professional","Team workspaces","API access","Custom fee overrides","Agency reporting"],cta:"Contact Sales"}
+  ];
+  document.getElementById("priceGrid").innerHTML = plans.map(p=>{
+    const price=yearly?p.y:p.m;
+    return `<div class="price-card ${p.featured?"featured":""}">
+      ${p.featured?`<span style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#C9A227,#B8911F);color:#fff;font-size:.7rem;font-weight:700;padding:5px 16px;border-radius:20px;letter-spacing:.08em">MOST POPULAR</span>`:""}
+      <div class="plan-name">${p.name}</div>
+      <div class="amount">${price===0?"$0":money(price)}<small>${price===0?" forever":"/mo"+(yearly&&price?" · billed yearly":"")}</small></div>
+      <ul>${p.feat.map(f=>`<li>${f}</li>`).join("")}</ul>
+      <a href="#/contact" class="btn ${p.featured?"btn-gold":"btn-outline"}" style="width:100%">${p.cta}</a>
+    </div>`;
+  }).join("");
+}
+function pageFaq(){
+  return `<section><div class="container" style="max-width:760px">
+    <div class="breadcrumb"><a href="#/">Home</a> / <span>FAQ</span></div>
+    <h1 style="margin-bottom:32px">Frequently Asked Questions</h1>
+    ${FAQS.map(f=>faqItem(f.q,f.a)).join("")}
+    <div style="margin-top:36px"><p>Still have questions? <a href="#/contact" style="color:var(--accent)">Contact our team →</a></p></div>
+  </div></section>`;
+}
+function pageAbout(){
+  return `<section><div class="container" style="max-width:760px">
+    <div class="breadcrumb"><a href="#/">Home</a> / <span>About</span></div>
+    <span class="eyebrow">Our Story</span>
+    <h1 style="margin-bottom:20px">Built for Sellers Who Care About the Numbers.</h1>
+    <div class="content-block">
+      <p>SellerMargin started with a simple frustration: sellers everywhere were making pricing decisions with half the information. A product that "looked" profitable on Amazon could quietly lose money after referral fees, fulfillment costs and ad spend. On eBay, the same story — different fees, same surprise.</p>
+      <p>We built SellerMargin to answer one question with total clarity: <strong>what do you actually keep?</strong></p>
+      <h2>Our Mission</h2>
+      <p>To make profit clarity the default for every ecommerce seller — from first-time dropshippers to eight-figure brands.</p>
+      <h2>Our Values</h2>
+      <ul><li><strong>Transparency.</strong> Every formula is shown. Every fee assumption is sourced and dated.</li>
+      <li><strong>Accuracy.</strong> Centralized, reviewable fee data — never hard-coded guesses.</li>
+      <li><strong>Independence.</strong> We show the numbers and let you decide. No "best marketplace" bias.</li>
+      <li><strong>Privacy.</strong> Calculations run in your browser. Your numbers are yours.</li></ul>
+    </div>
+  </div></section>`;
+}
+function pageContact(){
+  return `<section><div class="container" style="max-width:640px">
+    <div class="breadcrumb"><a href="#/">Home</a> / <span>Contact</span></div>
+    <h1 style="margin-bottom:12px">Contact Us</h1>
+    <p style="margin-bottom:32px">Questions about tools, fees or partnerships? We reply within one business day.</p>
+    <div class="calc-card">
+      <div class="field"><label>Name</label><div class="input-wrap"><input type="text" id="ct-name" placeholder="Your name"></div></div>
+      <div class="field"><label>Email</label><div class="input-wrap"><input type="email" id="ct-email" placeholder="you@company.com"></div></div>
+      <div class="field"><label>Subject</label><div class="input-wrap"><input type="text" id="ct-subject" placeholder="How can we help?"></div></div>
+      <div class="field"><label>Message</label><div class="input-wrap"><textarea id="ct-msg" rows="5" style="flex:1;background:transparent;border:none;outline:none;padding:12px;font-family:inherit;font-size:1rem;color:var(--text);resize:vertical" placeholder="Your message…"></textarea></div></div>
+      <button class="btn btn-primary" style="width:100%" onclick="sendContact()">Send Message</button>
+    </div>
+    <div class="trust-panel" style="margin-top:24px"><span class="tp-icon">✉</span><div><strong>Business inquiries:</strong> hello@sellermargin.com<br>Check our <a href="#/faq" style="color:var(--accent)">FAQ</a> for instant answers.</div></div>
+  </div></section>`;
+}
+function sendContact(){
+  const n=document.getElementById("ct-name").value.trim(), e=document.getElementById("ct-email").value.trim();
+  if(!n||!/.+@.+\..+/.test(e)){ toast("Please enter your name and a valid email."); return; }
+  ["ct-name","ct-email","ct-subject","ct-msg"].forEach(id=>document.getElementById(id).value="");
+  toast("Message sent. We'll be in touch within one business day.");
+}
+function pageMethodology(){
+  return `<section><div class="container"><div class="legal-page">
+    <div class="breadcrumb"><a href="#/">Home</a> / <span>Methodology</span></div>
+    <h1 style="margin-bottom:20px">Our Calculation Methodology</h1>
+    <div class="content-block">
+      <p>Every SellerMargin tool follows the same transparent pipeline:</p>
+      <h2>1. Inputs</h2><p>You provide product cost, selling price, shipping, packaging, advertising, returns allowance and other expenses. All inputs stay in your browser.</p>
+      <h2>2. Fee Application</h2><p>Marketplace fees are applied from our centralized fee database — never hard-coded in individual calculators. This means when a marketplace updates its fees, we update one source and every calculator reflects it.</p>
+      <h2>3. Core Formulas</h2>
+      <div class="formula">Net Profit = Revenue − All Costs − All Fees</div>
+      <div class="formula">Profit Margin = Net Profit ÷ Revenue × 100</div>
+      <div class="formula">ROI = Net Profit ÷ Product Cost × 100</div>
+      <div class="formula">Break-Even Price = Total Non-Percentage Costs ÷ (1 − Total Fee %)</div>
+      <div class="formula">Break-Even ROAS = 1 ÷ Pre-Ad Profit Margin</div>
+      <h2>4. Rounding</h2><p>Currency results are rounded to two decimal places using standard half-up rounding. Percentages display one decimal place; calculations use full precision before display.</p>
+      <h2>5. Testing</h2><p>Every calculator ships with automated tests covering fee math, percentages, fixed fees, profit, margin, ROI, ROAS, break-even and rounding — each verified against hand-computed examples.</p>
+    </div></div></div></section>`;
+}
+function pageFeeData(){
+  return `<section><div class="container"><div class="legal-page">
+    <div class="breadcrumb"><a href="#/">Home</a> / <span>Fee Data</span></div>
+    <h1 style="margin-bottom:20px">Fee Data & Sources</h1>
+    <div class="content-block">
+      <p>All marketplace fee rates used across SellerMargin come from the centralized table below — reviewed and updated by our team. Last full review: <strong>${FEE_DATA.lastReviewed}</strong>.</p>
+      <div class="table-wrap"><table style="min-width:0">
+        <thead><tr><th>Marketplace</th><th>Fee Structure (US, general)</th><th>Source</th></tr></thead>
+        <tbody>${Object.entries(FEE_DATA.marketplaces).map(([k,m])=>`<tr><td><strong>${m.name}</strong></td><td>${m.categories[0]}</td><td><a href="${FEE_DATA.sources[k]}" target="_blank" style="color:var(--accent)">Official docs ↗</a></td></tr>`).join("")}</tbody>
+      </table></div>
+      <p style="margin-top:16px">Important: fees vary by category, plan tier, seller status and country. The figures above are general reference rates for US sellers. We never claim real-time accuracy. Always confirm current rates on official marketplace pricing pages before making decisions.</p>
+    </div></div></div></section>`;
+}
+function legalPage(title, body){
+  return `<section><div class="container"><div class="legal-page">
+    <div class="breadcrumb"><a href="#/">Home</a> / <span>${title}</span></div>
+    <h1 style="margin-bottom:20px">${title}</h1>
+    <div class="content-block"><p><em>Last updated: ${FEE_DATA.lastReviewed}</em></p>${body}</div>
+  </div></div></section>`;
+}
+function page404(){ return `<section><div class="container" style="text-align:center;padding:100px 0"><h1>Page not found</h1><p style="margin:16px 0 28px">The page you're looking for doesn't exist.</p><a href="#/" class="btn btn-primary">Back to Home</a></div></section>`; }
+
+/* SEO content blocks per tool */
+const toolContent = {
+  "ecommerce-profit-calculator": `<h2>What is an ecommerce profit calculator?</h2>
+    <p>A profit calculator tells you how much money you actually keep from a sale after all costs: the product itself, shipping, marketplace fees, advertising and any other expenses. Revenue is not profit — this tool closes the gap.</p>
+    <h2>How to calculate ecommerce profit</h2>
+    <p>Add up every cost associated with one unit (product cost, shipping, fees, ads, packaging, returns allowance, other expenses) and subtract from your selling price. The result is your net profit per unit.</p>
+    <div class="formula">Net Profit = Selling Price − Product Cost − Shipping − Fees − Ads − Other Expenses</div>
+    <h2>Example calculation</h2>
+    <p>Selling a product for $49.99 that costs $18.00 to source, $5.00 to ship, with $7.00 in fees, $4.00 in ad spend and $0.35 packaging leaves a net profit of $15.64 — a 31.3% margin and 86.9% ROI.</p>
+    <h2>What fees should sellers consider?</h2>
+    <ul><li>Marketplace referral/transaction fees (typically 6.5%–15%)</li><li>Payment processing fees (2.9% + $0.30 on Shopify, 3% + $0.25 on Etsy)</li><li>Fulfillment fees if using FBA or similar</li><li>Fixed per-order fees (eBay $0.30, Etsy $0.20)</li></ul>
+    <h2>How advertising changes profit</h2>
+    <p>Ad spend is a per-unit cost. A product with a healthy 35% margin can drop below 10% after paid traffic. Use our ROAS and break-even ROAS calculators to see exactly where ads stop paying for themselves.</p>`,
+  "ebay-profit-calculator": `<h2>What is an eBay profit calculator?</h2>
+    <p>An eBay profit calculator estimates what you keep from an eBay sale after product cost, shipping, eBay's final value fee and your advertising costs. eBay's fee structure combines a percentage fee with a fixed per-order fee, which this calculator handles automatically.</p>
+    <h2>eBay profit formula</h2>
+    <div class="formula">Net Profit = Price − Cost − Shipping − (Price × 13.25% + $0.30) − Ads − Other</div>
+    <p>The 13.25% final value fee applies to most categories for US sellers, plus a $0.30 per-order fee. Categories like sneakers or watches differ — always check eBay's official fee page for your category.</p>
+    <h2>Example calculation</h2>
+    <p>Selling an item for $49.99 that costs you $18.00, with $5.00 shipping and $3.00 in promoted-listing costs: eBay fees are $49.99 × 13.25% + $0.30 = $6.92. Net profit = $49.99 − $18 − $5 − $6.92 − $3 = $17.07 (34.1% margin).</p>
+    <h2>How advertising changes profit on eBay</h2>
+    <p>Promoted Listings Advanced charges per click, while standard Promoted Listings take an ad-rate percentage of the sale. Both reduce net profit — model them in the Advertising Cost field before you commit to a price.</p>`,
+  "amazon-fba-profit-calculator": `<h2>What is an Amazon FBA profit calculator?</h2>
+    <p>This calculator estimates profit for products fulfilled by Amazon: it deducts your product cost, Amazon's referral fee (typically 15%), FBA fulfillment fees, advertising and other expenses from your selling price.</p>
+    <h2>Amazon FBA profit formula</h2>
+    <div class="formula">Net Profit = Price − Product Cost − FBA Fee − (Price × Referral %) − Ads − Other</div>
+    <p>Amazon's referral fee varies by category (most are 15%, some as low as 8% or as high as 45%). FBA fulfillment fees depend on size and weight tier. Enter your actual FBA fee from Amazon's fee preview for accuracy.</p>
+    <h2>How ACoS affects Amazon profit</h2>
+    <p>Amazon PPC can consume 10–40% of revenue in competitive categories. If your pre-ad margin is 25%, your break-even ACoS is 40% — spend beyond that and every ad-attributed sale loses money. Use our ACoS and Break-Even ACoS tools to stay on the right side of that line.</p>`,
+  "break-even-roas-calculator": `<h2>What is break-even ROAS?</h2>
+    <p>Break-even ROAS is the return on ad spend at which your advertising neither profits nor loses money. Below it, you're paying for revenue that costs more than it earns.</p>
+    <h2>Break-even ROAS formula</h2>
+    <div class="formula">Break-Even ROAS = 1 ÷ Pre-Ad Profit Margin</div>
+    <p>If your margin before advertising is 40%, break-even ROAS is 2.5×. At 25% margin, it's 4×. Lower margins demand dramatically better ad performance.</p>
+    <h2>Example</h2>
+    <p>A product sold at $50 with $30 total cost has a 40% pre-ad margin. Break-even ROAS = 1 ÷ 0.40 = 2.5×. A 3.0× ROAS earns $15 profit per $50 of ad-driven revenue; a 2.0× ROAS loses $5.</p>`,
+  "profit-margin-calculator": `<h2>Margin vs markup — don't confuse them</h2>
+    <p>A 50% markup equals only a 33.3% margin. Markup divides profit by cost; margin divides profit by price. Retail buyers, investors and ad platforms think in margin — so should you.</p>
+    <h2>Formulas</h2>
+    <div class="formula">Margin = (Price − Cost) ÷ Price × 100</div>
+    <div class="formula">Markup = (Price − Cost) ÷ Cost × 100</div>
+    <h2>Rule of thumb</h2>
+    <p>Healthy ecommerce margins typically range from 15–40% depending on category, with private-label products often targeting 30%+ to absorb ads and fees.</p>`,
+  "selling-price-calculator": `<h2>How to set a profitable selling price</h2>
+    <p>Work backwards from your costs and target margin rather than guessing. If a product costs you $18 all-in and you want a 30% margin, the required price is $18 ÷ (1 − 0.30) = $25.71 — not $23.40 (which would be a 30% markup, only a 23% margin).</p>
+    <h2>Formula</h2>
+    <div class="formula">Required Price = Total Cost ÷ (1 − Target Margin)</div>
+    <p>Remember to build marketplace fees into your "total cost" before setting the target, or use the marketplace-specific calculators which handle fees for you.</p>`,
+  "break-even-calculator": `<h2>What is break-even analysis?</h2>
+    <p>Break-even analysis finds how many units you must sell to cover your fixed costs. Below that volume, you lose money no matter how good the per-unit margin looks.</p>
+    <h2>Formula</h2>
+    <div class="formula">Break-Even Units = Fixed Costs ÷ (Price − Variable Cost per Unit)</div>
+    <h2>Example</h2>
+    <p>With $5,000 in fixed costs, a $40 price and $22 variable cost, your contribution margin is $18/unit. Break-even = 5,000 ÷ 18 ≈ 278 units. Every sale beyond 278 contributes pure profit.</p>`,
+  "markup-calculator": `<h2>How markup works</h2>
+    <p>Markup is the percentage added to cost to reach price. A $20 item with a 50% markup sells for $30. Markup is easy for costing; margin is better for measuring health — this calculator shows both.</p>
+    <div class="formula">Price = Cost × (1 + Markup%)</div>`,
+  "ecommerce-roas-calculator": `<h2>What is ROAS?</h2>
+    <p>Return on Ad Spend measures revenue generated per dollar of ad spend. A 4× ROAS means $4 of revenue per $1 spent. It measures revenue efficiency — not profit — so pair it with our break-even ROAS tool.</p>
+    <div class="formula">ROAS = Ad Revenue ÷ Ad Spend</div>`,
+  "amazon-acos-calculator": `<h2>What is ACoS?</h2>
+    <p>Advertising Cost of Sales is Amazon's mirror of ROAS: ad spend divided by ad revenue. A 25% ACoS equals a 4× ROAS. Compare your ACoS to your break-even ACoS (1 ÷ margin) to know if campaigns profit.</p>
+    <div class="formula">ACoS = Ad Spend ÷ Ad Revenue × 100</div>`,
+  "ecommerce-cac-calculator": `<h2>What is CAC?</h2>
+    <p>Customer Acquisition Cost is total marketing spend divided by new customers acquired. Compare it to customer LTV — a healthy business typically has LTV ≥ 3× CAC.</p>
+    <div class="formula">CAC = Total Marketing Spend ÷ New Customers</div>`,
+  "ecommerce-ltv-calculator": `<h2>What is customer LTV?</h2>
+    <p>Lifetime value estimates the total profit a customer generates over their relationship with your store. It's the ceiling on what you can afford to spend acquiring customers.</p>
+    <div class="formula">LTV = AOV × Orders/Year × Years × Margin%</div>
+    <p>If your LTV is $180 and CAC is $60, you have a 3:1 ratio — generally sustainable. Below 2:1, growth usually burns cash.</p>`
+};
+
+/* ================= ROUTER & MOUNT ================= */
+function router(){
+  const hash = location.hash.slice(2) || "";
+  const app = document.getElementById("app");
+  const parts = hash.split("/").filter(Boolean);
+  let html;
+  if(parts.length===0) html = pageHome();
+  else if(parts[0]==="calculators") html = pageCalculators();
+  else if(parts[0]==="calculator" && parts[1]) html = pageTool(parts[1]);
+  else if(parts[0]==="compare") html = pageCompare();
+  else if(SECTION_CONTENT[parts[0]]) html = pageMarketplace(parts[0]);
+  else if(parts[0]==="guides") html = pageGuides();
+  else if(parts[0]==="guide") html = legalPage("Seller Guide","<p>Full guide content is being written by our editorial team. Browse all guides on the <a href='#/guides' style='color:var(--accent)'>Seller Guides</a> page.</p>");
+  else if(parts[0]==="pricing") html = pagePricing();
+  else if(parts[0]==="faq") html = pageFaq();
+  else if(parts[0]==="about") html = pageAbout();
+  else if(parts[0]==="contact") html = pageContact();
+  else if(parts[0]==="methodology") html = pageMethodology();
+  else if(parts[0]==="fee-data") html = pageFeeData();
+  else if(parts[0]==="privacy") html = legalPage("Privacy Policy","<p>SellerMargin collects minimal data. Calculator inputs are processed entirely in your browser and never transmitted to our servers. If you create an account, we store your email, name and saved scenarios. We use Google Analytics 4 to understand aggregate usage. We never sell personal data. Contact us to request or delete your data.</p><h2>Cookies</h2><p>We use essential cookies (theme preference) and analytics cookies. No advertising trackers are placed without consent.</p>");
+  else if(parts[0]==="terms") html = legalPage("Terms & Conditions","<p>By using SellerMargin you agree to these terms. Calculators provide estimates for informational purposes only and do not constitute financial, tax or legal advice. Fee rates are reference values reviewed periodically and may differ from current official rates. You are responsible for verifying fees before business decisions.</p><h2>Acceptable Use</h2><p>You may not scrape, abuse or misrepresent the service. We may update tools and fees at any time.</p><h2>Liability</h2><p>SellerMargin is provided 'as is'. We are not liable for decisions made based on calculator outputs.</p>");
+  else if(parts[0]==="disclaimer") html = legalPage("Disclaimer","<p>SellerMargin provides estimation tools for informational purposes only. Results depend entirely on the inputs you provide and reference fee rates that may not reflect current official marketplace fees for your category, plan or country.</p><p>Nothing on this site constitutes financial, tax, legal or investment advice. Always verify current fee schedules on official marketplace documentation and consult a qualified professional for decisions affecting your business.</p>");
+  else html = page404();
+  app.innerHTML = html;
+  window.scrollTo(0,0);
+  // page-specific mounts
+  if(parts.length===0){
+    buildCalculator(document.getElementById("heroCalc"), {...TOOLS["ecommerce-profit-calculator"], id:"hero", title:"Profit Calculator — Live Preview", instant:true});
+    // preload example values
+    setTimeout(()=>{ const ex={cost:"18",price:"49.99",shipping:"5",fees:"7",ads:"4",other:"3.35"};
+      Object.entries(ex).forEach(([k,v])=>{ const i=document.getElementById("in-"+k); if(i){i.value=v;} });
+      runCalc("hero",true); animateCounters();
+    },50);
+  }
+  if(parts[0]==="calculator" && parts[1] && TOOLS[parts[1]]){
+    buildCalculator(document.getElementById("toolCalc"), {...TOOLS[parts[1]], id:parts[1], title:"", button:"auto"});
+    setTimeout(()=>{ const cfg=TOOLS[parts[1]]; runCalc(parts[1],true); },30);
+  }
+  if(parts[0]==="compare"){ setTimeout(updateCompare,30); }
+  if(parts[0]==="pricing"){ renderPricing(); }
+}
+window.addEventListener("hashchange", router);
+
+/* ================= GLOBAL UI ================= */
+function toast(msg){ const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(t._to); t._to=setTimeout(()=>t.classList.remove("show"),2600); }
+function toggleTheme(){
+  const cur=document.documentElement.getAttribute("data-theme")==="dark"?"dark":"light";
+  const next=cur==="dark"?"light":"dark";
+  document.documentElement.setAttribute("data-theme",next);
+  localStorage.setItem("sm-theme",next);
+}
+function toggleMobile(){ document.getElementById("mobileMenu").classList.toggle("open"); }
+function toggleSearch(){
+  const o=document.getElementById("searchOverlay"); o.classList.toggle("open");
+  if(o.classList.contains("open")){ document.getElementById("searchInput").focus(); doSearch(""); }
+}
+function doSearch(q){
+  q=q.toLowerCase().trim();
+  const res = q ? SEARCH_INDEX.filter(i=>i.keywords.includes(q)||i.title.toLowerCase().includes(q)) : SEARCH_INDEX.slice(0,8);
+  document.getElementById("searchResults").innerHTML = res.length
+    ? res.slice(0,10).map(r=>`<a class="sr-item" href="${r.url}" onclick="toggleSearch()"><span class="sr-type">${r.type}</span><div class="sr-title">${r.title}</div></a>`).join("")
+    : `<div style="padding:20px;color:var(--muted);font-size:.9rem">No results for "${q}". Try "eBay", "margin" or "ROAS".</div>`;
+}
+document.addEventListener("keydown",e=>{ if(e.key==="/"&&!["INPUT","TEXTAREA"].includes(document.activeElement.tagName)){ e.preventDefault(); toggleSearch(); } if(e.key==="Escape"){ document.getElementById("searchOverlay").classList.remove("open"); } });
+// theme init
+(function(){ const s=localStorage.getItem("sm-theme"); if(s) document.documentElement.setAttribute("data-theme",s); else if(matchMedia("(prefers-color-scheme: dark)").matches) document.documentElement.setAttribute("data-theme","dark"); })();
+// marketplace dropdown
+document.getElementById("mkWrap").addEventListener("mouseenter",()=>document.getElementById("mkDropdown").style.display="block");
+document.getElementById("mkWrap").addEventListener("mouseleave",()=>document.getElementById("mkDropdown").style.display="none");
+// counters
+function animateCounters(){ document.querySelectorAll("[data-count]").forEach(el=>{ const target=+el.dataset.count; let cur=0; const step=Math.max(1,Math.ceil(target/40)); const iv=setInterval(()=>{ cur+=step; if(cur>=target){cur=target;clearInterval(iv);} el.textContent=cur; },30); }); }
+router();
+</script>
+</body>
+</html>
