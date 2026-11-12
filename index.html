@@ -789,7 +789,7 @@ function renderPricing(){
       <div class="plan-name">${p.name}</div>
       <div class="amount">${price===0?"$0":money(price)}<small>${price===0?" forever":"/mo"+(yearly&&price?" · billed yearly":"")}</small></div>
       <ul>${p.feat.map(f=>`<li>${f}</li>`).join("")}</ul>
-      <a href="#/contact" class="btn ${p.featured?"btn-gold":"btn-outline"}" style="width:100%">${p.cta}</a>
+      <a href="#/contact?plan=${encodeURIComponent(p.name)}" class="btn ${p.featured?"btn-gold":"btn-outline"}" style="width:100%">${p.cta}</a>
     </div>`;
   }).join("");
 }
@@ -825,6 +825,7 @@ function pageContact(){
     <h1 style="margin-bottom:12px">Contact Us</h1>
     <p style="margin-bottom:32px">Questions about tools, fees or partnerships? We reply within one business day.</p>
     <div class="calc-card">
+    <div id="ct-plan-field" class="field" style="display:none"><label for="ct-plan">Selected plan</label><div class="input-wrap"><input type="text" id="ct-plan" readonly></div></div>
       <div class="field"><label for="ct-name">Name</label><div class="input-wrap"><input type="text" id="ct-name" maxlength="120" autocomplete="name" placeholder="Your name" required></div></div>
       <div class="field"><label for="ct-email">Email</label><div class="input-wrap"><input type="email" id="ct-email" maxlength="254" autocomplete="email" placeholder="you@company.com" required></div></div>
       <div class="field"><label for="ct-subject">Subject</label><div class="input-wrap"><input type="text" id="ct-subject" maxlength="160" placeholder="How can we help?"></div></div>
@@ -839,6 +840,7 @@ async function sendContact(){
   const n=document.getElementById("ct-name").value.trim(), e=document.getElementById("ct-email").value.trim();
   const subject=document.getElementById("ct-subject").value.trim(), message=document.getElementById("ct-msg").value.trim();
   const website=document.getElementById("ct-website").value;
+  const plan=document.getElementById("ct-plan").value;
   if(!n||n.length>120||!/.+@.+\..+/.test(e)||e.length>254||!message||message.length>5000){
     toast("Please enter your name, a valid email, and a message.");
     return;
@@ -850,14 +852,16 @@ async function sendContact(){
     const response=await fetch("/api/contact",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({name:n,email:e,subject,message,website})
+      body:JSON.stringify({name:n,email:e,subject,message,website,plan})
     });
     let result;
     try{ result=await response.json(); }
     catch{ throw new Error("The contact service returned an invalid response."); }
     if(!response.ok) throw new Error(result.error||"Unable to send your message. Please try again.");
     ["ct-name","ct-email","ct-subject","ct-msg"].forEach(id=>document.getElementById(id).value="");
-    toast("Message sent. We'll be in touch within one business day.");
+    toast(result.autoReplySent===false
+      ?"Your message reached us, but we couldn't send the confirmation email."
+      :"Message sent. Check your inbox for a confirmation.");
   }catch(error){
     console.error("Contact request failed.",error);
     toast(error.message||"Unable to send your message. Please try again.");
@@ -982,7 +986,8 @@ const toolContent = {
 function router(){
   const hash = location.hash.slice(2) || "";
   const app = document.getElementById("app");
-  const parts = hash.split("/").filter(Boolean);
+  const route = hash.split("?")[0];
+  const parts = route.split("/").filter(Boolean);
   let html;
   if(parts.length===0) html = pageHome();
   else if(parts[0]==="calculators") html = pageCalculators();
@@ -997,11 +1002,19 @@ function router(){
   else if(parts[0]==="contact") html = pageContact();
   else if(parts[0]==="methodology") html = pageMethodology();
   else if(parts[0]==="fee-data") html = pageFeeData();
-  else if(parts[0]==="privacy") html = legalPage("Privacy Policy","<p>SellerMargin collects minimal data. Calculator inputs are processed entirely in your browser and are not transmitted. If you send a contact request, your name, email address, subject and message are sent to our email delivery provider, Resend, so we can respond. We use Google Analytics 4 to understand aggregate usage. We never sell personal data. Contact us to request or delete your data.</p><h2>Cookies</h2><p>We use essential cookies (theme preference) and analytics cookies. No advertising trackers are placed without consent.</p>");
+  else if(parts[0]==="privacy") html = legalPage("Privacy Policy","<p>SellerMargin collects minimal data. Calculator inputs are processed entirely in your browser and are not transmitted. If you send a contact request, your name, email address, selected plan, subject and message are sent through Gmail to our inbox, and an acknowledgement is sent to the email address you provide. We use Google Analytics 4 to understand aggregate usage. We never sell personal data. Contact us to request or delete your data.</p><h2>Cookies</h2><p>We use essential cookies (theme preference) and analytics cookies. No advertising trackers are placed without consent.</p>");
   else if(parts[0]==="terms") html = legalPage("Terms & Conditions","<p>By using SellerMargin you agree to these terms. Calculators provide estimates for informational purposes only and do not constitute financial, tax or legal advice. Fee rates are reference values reviewed periodically and may differ from current official rates. You are responsible for verifying fees before business decisions.</p><h2>Acceptable Use</h2><p>You may not scrape, abuse or misrepresent the service. We may update tools and fees at any time.</p><h2>Liability</h2><p>SellerMargin is provided 'as is'. We are not liable for decisions made based on calculator outputs.</p>");
   else if(parts[0]==="disclaimer") html = legalPage("Disclaimer","<p>SellerMargin provides estimation tools for informational purposes only. Results depend entirely on the inputs you provide and reference fee rates that may not reflect current official marketplace fees for your category, plan or country.</p><p>Nothing on this site constitutes financial, tax, legal or investment advice. Always verify current fee schedules on official marketplace documentation and consult a qualified professional for decisions affecting your business.</p>");
   else html = page404();
   app.innerHTML = html;
+  const contactPlanField = document.getElementById("ct-plan-field");
+  if(contactPlanField){
+    const selectedPlan = new URLSearchParams(hash.split("?")[1] || "").get("plan");
+    if(["Free","Professional","Business"].includes(selectedPlan)){
+      document.getElementById("ct-plan").value=selectedPlan;
+      contactPlanField.style.display="block";
+    }
+  }
   window.scrollTo(0,0);
   // page-specific mounts
   if(parts.length===0){

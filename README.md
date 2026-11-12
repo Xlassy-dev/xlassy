@@ -4,16 +4,21 @@ Static SellerMargin site with a Vercel serverless contact endpoint.
 
 ## Contact email setup
 
-Contact submissions are sent by `/api/contact.js` using Resend. Configure these
-environment variables in the Vercel project (Settings → Environment Variables):
+The contact endpoint sends an inquiry to the configured Gmail inbox and sends
+an acknowledgement to the submitter. Pricing links include the selected plan.
 
-- `RESEND_API_KEY`: a private Resend API key.
-- `CONTACT_TO_EMAIL`: the inbox that receives queries.
-- `CONTACT_FROM_EMAIL`: a sender address on a domain verified with Resend, for
-  example `SellerMargin <contact@your-verified-domain.com>`.
+For local development, fill in `.env.local`:
 
-Create and verify the sending domain in Resend before deploying. Add the values
-to Vercel without committing them to this repository, then redeploy so the
-function receives the settings. The contact form reports an error if delivery
-is unavailable; it does not display a success message unless Resend accepts the
-email.
+- `GMAIL_USER`: the Gmail account used to send and receive inquiries.
+- `GMAIL_APP_PASSWORD`: a Google App Password (not your regular Gmail password).
+
+Enable 2-Step Verification on the Gmail account, create an App Password in
+Google Account → Security → App passwords, and enter it in `.env.local` without
+sharing or committing it. Run `npx vercel dev` so the API function can read the
+local settings; opening `index.html` directly as a file will not run the
+backend.
+
+For production, add the same two values in Vercel → Project Settings →
+Environment Variables, then redeploy. Vercel cannot read the local `.env.local`
+file. Never commit or share the app password. Google App Passwords require
+2-Step Verification to be enabled on the Gmail account.
