@@ -293,7 +293,7 @@ footer a:hover{color:var(--text)}
   </div>
 </div>
 
-<div id="toast"></div>
+<div id="toast" role="status" aria-live="polite"></div>
 
 <script>
 /* ================= FEE DATA (centralized — admin-updatable) ================= */
@@ -825,20 +825,46 @@ function pageContact(){
     <h1 style="margin-bottom:12px">Contact Us</h1>
     <p style="margin-bottom:32px">Questions about tools, fees or partnerships? We reply within one business day.</p>
     <div class="calc-card">
-      <div class="field"><label>Name</label><div class="input-wrap"><input type="text" id="ct-name" placeholder="Your name"></div></div>
-      <div class="field"><label>Email</label><div class="input-wrap"><input type="email" id="ct-email" placeholder="you@company.com"></div></div>
-      <div class="field"><label>Subject</label><div class="input-wrap"><input type="text" id="ct-subject" placeholder="How can we help?"></div></div>
-      <div class="field"><label>Message</label><div class="input-wrap"><textarea id="ct-msg" rows="5" style="flex:1;background:transparent;border:none;outline:none;padding:12px;font-family:inherit;font-size:1rem;color:var(--text);resize:vertical" placeholder="Your message…"></textarea></div></div>
-      <button class="btn btn-primary" style="width:100%" onclick="sendContact()">Send Message</button>
+      <div class="field"><label for="ct-name">Name</label><div class="input-wrap"><input type="text" id="ct-name" maxlength="120" autocomplete="name" placeholder="Your name" required></div></div>
+      <div class="field"><label for="ct-email">Email</label><div class="input-wrap"><input type="email" id="ct-email" maxlength="254" autocomplete="email" placeholder="you@company.com" required></div></div>
+      <div class="field"><label for="ct-subject">Subject</label><div class="input-wrap"><input type="text" id="ct-subject" maxlength="160" placeholder="How can we help?"></div></div>
+      <div class="field"><label for="ct-msg">Message</label><div class="input-wrap"><textarea id="ct-msg" rows="5" maxlength="5000" style="flex:1;background:transparent;border:none;outline:none;padding:12px;font-family:inherit;font-size:1rem;color:var(--text);resize:vertical" placeholder="Your message…" required></textarea></div></div>
+      <div aria-hidden="true" style="position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden"><label for="ct-website">Leave this field empty</label><input type="text" id="ct-website" tabindex="-1" autocomplete="off"></div>
+      <button id="contact-submit" type="button" class="btn btn-primary" style="width:100%" onclick="sendContact()">Send Message</button>
     </div>
-    <div class="trust-panel" style="margin-top:24px"><span class="tp-icon">✉</span><div><strong>Business inquiries:</strong> hello@sellermargin.com<br>Check our <a href="#/faq" style="color:var(--accent)">FAQ</a> for instant answers.</div></div>
+    <div class="trust-panel" style="margin-top:24px"><span class="tp-icon">✉</span><div><strong>Business inquiries:</strong> Use the form above to reach us.<br>Check our <a href="#/faq" style="color:var(--accent)">FAQ</a> for instant answers.</div></div>
   </div></section>`;
 }
-function sendContact(){
+async function sendContact(){
   const n=document.getElementById("ct-name").value.trim(), e=document.getElementById("ct-email").value.trim();
-  if(!n||!/.+@.+\..+/.test(e)){ toast("Please enter your name and a valid email."); return; }
-  ["ct-name","ct-email","ct-subject","ct-msg"].forEach(id=>document.getElementById(id).value="");
-  toast("Message sent. We'll be in touch within one business day.");
+  const subject=document.getElementById("ct-subject").value.trim(), message=document.getElementById("ct-msg").value.trim();
+  const website=document.getElementById("ct-website").value;
+  if(!n||n.length>120||!/.+@.+\..+/.test(e)||e.length>254||!message||message.length>5000){
+    toast("Please enter your name, a valid email, and a message.");
+    return;
+  }
+  const button=document.getElementById("contact-submit"), originalText=button.textContent;
+  button.disabled=true;
+  button.textContent="Sending…";
+  try{
+    const response=await fetch("/api/contact",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({name:n,email:e,subject,message,website})
+    });
+    let result;
+    try{ result=await response.json(); }
+    catch{ throw new Error("The contact service returned an invalid response."); }
+    if(!response.ok) throw new Error(result.error||"Unable to send your message. Please try again.");
+    ["ct-name","ct-email","ct-subject","ct-msg"].forEach(id=>document.getElementById(id).value="");
+    toast("Message sent. We'll be in touch within one business day.");
+  }catch(error){
+    console.error("Contact request failed.",error);
+    toast(error.message||"Unable to send your message. Please try again.");
+  }finally{
+    button.disabled=false;
+    button.textContent=originalText;
+  }
 }
 function pageMethodology(){
   return `<section><div class="container"><div class="legal-page">
@@ -971,7 +997,7 @@ function router(){
   else if(parts[0]==="contact") html = pageContact();
   else if(parts[0]==="methodology") html = pageMethodology();
   else if(parts[0]==="fee-data") html = pageFeeData();
-  else if(parts[0]==="privacy") html = legalPage("Privacy Policy","<p>SellerMargin collects minimal data. Calculator inputs are processed entirely in your browser and never transmitted to our servers. If you create an account, we store your email, name and saved scenarios. We use Google Analytics 4 to understand aggregate usage. We never sell personal data. Contact us to request or delete your data.</p><h2>Cookies</h2><p>We use essential cookies (theme preference) and analytics cookies. No advertising trackers are placed without consent.</p>");
+  else if(parts[0]==="privacy") html = legalPage("Privacy Policy","<p>SellerMargin collects minimal data. Calculator inputs are processed entirely in your browser and are not transmitted. If you send a contact request, your name, email address, subject and message are sent to our email delivery provider, Resend, so we can respond. We use Google Analytics 4 to understand aggregate usage. We never sell personal data. Contact us to request or delete your data.</p><h2>Cookies</h2><p>We use essential cookies (theme preference) and analytics cookies. No advertising trackers are placed without consent.</p>");
   else if(parts[0]==="terms") html = legalPage("Terms & Conditions","<p>By using SellerMargin you agree to these terms. Calculators provide estimates for informational purposes only and do not constitute financial, tax or legal advice. Fee rates are reference values reviewed periodically and may differ from current official rates. You are responsible for verifying fees before business decisions.</p><h2>Acceptable Use</h2><p>You may not scrape, abuse or misrepresent the service. We may update tools and fees at any time.</p><h2>Liability</h2><p>SellerMargin is provided 'as is'. We are not liable for decisions made based on calculator outputs.</p>");
   else if(parts[0]==="disclaimer") html = legalPage("Disclaimer","<p>SellerMargin provides estimation tools for informational purposes only. Results depend entirely on the inputs you provide and reference fee rates that may not reflect current official marketplace fees for your category, plan or country.</p><p>Nothing on this site constitutes financial, tax, legal or investment advice. Always verify current fee schedules on official marketplace documentation and consult a qualified professional for decisions affecting your business.</p>");
   else html = page404();
