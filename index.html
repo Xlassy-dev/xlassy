@@ -43,20 +43,45 @@ p{color:var(--muted)}
 .btn-gold{background:linear-gradient(135deg,#C9A227,#B8911F);color:#fff}
 .btn-gold:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
 /* NAV */
-header{position:sticky;top:0;z-index:100;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+header{position:sticky;top:0;z-index:100;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);transition:background .25s,border-color .25s,box-shadow .25s}
+header.scrolled{background:color-mix(in srgb,var(--bg) 94%,transparent);box-shadow:0 10px 30px rgba(17,24,39,.08)}
+[data-theme="dark"] header.scrolled{box-shadow:0 10px 30px rgba(0,0,0,.24)}
 .nav{display:flex;align-items:center;gap:8px;height:68px}
 .logo{font-weight:800;font-size:1.25rem;letter-spacing:-.02em;text-decoration:none;color:var(--text);display:flex;align-items:center;gap:9px;margin-right:14px}
-.logo-mark{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#C9A227,#7A6114);display:grid;place-items:center;color:#fff;font-size:.85rem;font-weight:800}
+.logo-mark{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#C9A227,#7A6114);display:grid;place-items:center;color:#fff;font-size:.85rem;font-weight:800;transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .25s}
+.logo:hover .logo-mark{transform:rotate(-8deg) scale(1.06);box-shadow:0 5px 14px rgba(201,162,39,.28)}
 .nav-links{display:flex;gap:4px;flex:1}
-.nav-links a{text-decoration:none;color:var(--muted);font-size:.9rem;font-weight:500;padding:8px 12px;border-radius:8px;transition:all .15s}
+.nav-links a{text-decoration:none;color:var(--muted);font-size:.9rem;font-weight:500;padding:8px 12px;border-radius:8px;transition:color .2s,background .2s}
 .nav-links a:hover{color:var(--text);background:color-mix(in srgb,var(--text) 5%,transparent)}
+.nav-links>a,#mkWrap>a{position:relative}
+.nav-links>a::after,#mkWrap>a::after{content:"";position:absolute;left:12px;right:12px;bottom:3px;height:2px;border-radius:2px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .22s ease}
+.nav-links>a:hover::after,#mkWrap>a:hover::after,.nav-links>a.active::after,#mkWrap>a.active::after{transform:scaleX(1)}
+.nav-links>a.active,#mkWrap>a.active{color:var(--text);background:color-mix(in srgb,var(--accent) 8%,transparent)}
 .nav-right{display:flex;align-items:center;gap:8px}
-.icon-btn{width:38px;height:38px;border-radius:9px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;display:grid;place-items:center;transition:all .15s}
-.icon-btn:hover{border-color:var(--text)}
+.icon-btn{width:38px;height:38px;border-radius:9px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;display:grid;place-items:center;transition:border-color .2s,background .2s,transform .2s,box-shadow .2s}
+.icon-btn:hover{border-color:var(--accent);transform:translateY(-1px);box-shadow:0 4px 12px rgba(17,24,39,.08)}
 .hamburger{display:none}
-.mobile-menu{display:none;position:absolute;top:68px;left:0;right:0;background:var(--card);border-bottom:1px solid var(--border);padding:16px 24px;flex-direction:column;gap:4px}
-.mobile-menu.open{display:flex}
-.mobile-menu a{text-decoration:none;color:var(--text);font-weight:500;padding:12px 8px;border-bottom:1px solid var(--border)}
+.hamburger-icon{position:relative;display:block;width:18px;height:14px}
+.hamburger-icon span{position:absolute;left:0;width:100%;height:2px;border-radius:2px;background:currentColor;transition:top .22s ease,transform .22s ease,opacity .16s ease}
+.hamburger-icon span:nth-child(1){top:1px}
+.hamburger-icon span:nth-child(2){top:6px}
+.hamburger-icon span:nth-child(3){top:11px}
+.hamburger[aria-expanded="true"] .hamburger-icon span:nth-child(1){top:6px;transform:rotate(45deg)}
+.hamburger[aria-expanded="true"] .hamburger-icon span:nth-child(2){opacity:0;transform:scaleX(.4)}
+.hamburger[aria-expanded="true"] .hamburger-icon span:nth-child(3){top:6px;transform:rotate(-45deg)}
+.mobile-menu{display:flex;position:absolute;top:68px;left:0;right:0;background:var(--card);border-bottom:1px solid var(--border);padding:0 24px;flex-direction:column;gap:4px;max-height:0;overflow:hidden;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-10px);box-shadow:var(--shadow-lg);transition:max-height .3s ease,padding .25s ease,opacity .2s ease,transform .25s ease,visibility 0s linear .3s}
+.mobile-menu.open{max-height:calc(100vh - 68px);padding:14px 24px 18px;opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0);transition:max-height .3s ease,padding .25s ease,opacity .2s ease,transform .25s ease,visibility 0s}
+.mobile-menu a{text-decoration:none;color:var(--text);font-weight:500;padding:12px 10px;border-bottom:1px solid var(--border);border-radius:8px;opacity:0;transform:translateY(-7px);transition:color .2s,background .2s,border-color .2s,opacity .2s ease,transform .25s ease}
+.mobile-menu.open a{opacity:1;transform:translateY(0)}
+.mobile-menu.open a:nth-child(1){transition-delay:.02s}
+.mobile-menu.open a:nth-child(2){transition-delay:.04s}
+.mobile-menu.open a:nth-child(3){transition-delay:.06s}
+.mobile-menu.open a:nth-child(4){transition-delay:.08s}
+.mobile-menu.open a:nth-child(5){transition-delay:.1s}
+.mobile-menu.open a:nth-child(6){transition-delay:.12s}
+.mobile-menu.open a:nth-child(7){transition-delay:.14s}
+.mobile-menu a:hover,.mobile-menu a.active{color:var(--accent-ink);background:color-mix(in srgb,var(--accent) 9%,transparent)}
+@media(min-width:881px){.mobile-menu{display:none}}
 @media(max-width:880px){.nav-links{display:none}.hamburger{display:grid}}
 /* HERO */
 .hero{padding:96px 0 72px;position:relative;overflow:hidden}
@@ -220,6 +245,7 @@ footer a:hover{color:var(--text)}
   .formula{padding:14px 16px;font-size:.82rem;overflow-wrap:anywhere}
   .ad-slot{height:auto;min-height:90px;padding:12px;text-align:center}
   #searchOverlay{padding:10vh 16px}
+  .mobile-menu.open{padding-left:16px;padding-right:16px}
 }
 @media(max-width:380px){
   .container{padding:0 14px}
@@ -231,13 +257,17 @@ footer a:hover{color:var(--text)}
   .result-mini .rm-value{font-size:.95rem}
   .footer-bottom{flex-direction:column}
 }
+@media(prefers-reduced-motion:reduce){
+  header,.logo-mark,.nav-links>a::after,#mkWrap>a::after,.icon-btn,.hamburger-icon span,.mobile-menu,.mobile-menu a{transition-duration:.01ms!important}
+  .logo:hover .logo-mark,.icon-btn:hover{transform:none}
+}
 </style>
 </head>
 <body>
 <header>
   <div class="container nav">
     <a class="logo" href="#/"><span class="logo-mark">S</span>SellerMargin</a>
-    <nav class="nav-links">
+    <nav class="nav-links" aria-label="Primary">
       <a href="#/">Home</a>
       <a href="#/calculators">Calculators</a>
       <div style="position:relative" id="mkWrap">
@@ -263,12 +293,12 @@ footer a:hover{color:var(--text)}
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4m11.4-11.4 1.4-1.4"/></svg>
       </button>
       <a href="#/calculators" class="btn btn-primary" style="padding:9px 18px;font-size:.85rem">Explore Tools</a>
-      <button class="icon-btn hamburger" onclick="toggleMobile()" aria-label="Menu">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      <button class="icon-btn hamburger" id="mobileMenuButton" onclick="toggleMobile()" aria-label="Menu" aria-controls="mobileMenu" aria-expanded="false">
+        <span class="hamburger-icon" aria-hidden="true"><span></span><span></span><span></span></span>
       </button>
     </div>
   </div>
-  <div class="mobile-menu" id="mobileMenu">
+  <nav class="mobile-menu" id="mobileMenu" aria-label="Mobile">
     <a href="#/" onclick="toggleMobile()">Home</a>
     <a href="#/calculators" onclick="toggleMobile()">Calculators</a>
     <a href="#/compare" onclick="toggleMobile()">Marketplace Comparison</a>
@@ -276,7 +306,7 @@ footer a:hover{color:var(--text)}
     <a href="#/pricing" onclick="toggleMobile()">Pricing</a>
     <a href="#/about" onclick="toggleMobile()">About</a>
     <a href="#/contact" onclick="toggleMobile()">Contact</a>
-  </div>
+  </nav>
 </header>
 
 <main id="app"></main>
@@ -1019,11 +1049,23 @@ const toolContent = {
 };
 
 /* ================= ROUTER & MOUNT ================= */
+function syncNavigation(route){
+  const activeRoute = route.startsWith("calculator/") ? "calculators" : route;
+  document.querySelectorAll(".nav-links a[href^='#/'],.mobile-menu a[href^='#/']").forEach(link=>{
+    const target = link.getAttribute("href").slice(2).split("?")[0];
+    const active = target ? activeRoute===target || activeRoute.startsWith(target+"/") : !activeRoute;
+    link.classList.toggle("active",active);
+    if(active) link.setAttribute("aria-current","page");
+    else link.removeAttribute("aria-current");
+  });
+}
 function router(){
   const hash = location.hash.slice(2) || "";
   const app = document.getElementById("app");
   const route = hash.split("?")[0];
   const parts = route.split("/").filter(Boolean);
+  setMobileMenu(false);
+  syncNavigation(route);
   let html;
   if(parts.length===0) html = pageHome();
   else if(parts[0]==="calculators") html = pageCalculators();
@@ -1071,6 +1113,10 @@ function router(){
 window.addEventListener("hashchange", router);
 
 /* ================= GLOBAL UI ================= */
+const siteHeader=document.querySelector("header");
+function updateHeaderScroll(){ siteHeader.classList.toggle("scrolled",window.scrollY>8); }
+window.addEventListener("scroll",updateHeaderScroll,{passive:true});
+updateHeaderScroll();
 function toast(msg){ const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(t._to); t._to=setTimeout(()=>t.classList.remove("show"),2600); }
 function toggleTheme(){
   const cur=document.documentElement.getAttribute("data-theme")==="dark"?"dark":"light";
@@ -1078,7 +1124,14 @@ function toggleTheme(){
   document.documentElement.setAttribute("data-theme",next);
   localStorage.setItem("sm-theme",next);
 }
-function toggleMobile(){ document.getElementById("mobileMenu").classList.toggle("open"); }
+function setMobileMenu(open){
+  const menu=document.getElementById("mobileMenu");
+  const button=document.getElementById("mobileMenuButton");
+  menu.classList.toggle("open",open);
+  button.setAttribute("aria-expanded",String(open));
+  button.setAttribute("aria-label",open?"Close menu":"Menu");
+}
+function toggleMobile(){ setMobileMenu(!document.getElementById("mobileMenu").classList.contains("open")); }
 function toggleSearch(){
   const o=document.getElementById("searchOverlay"); o.classList.toggle("open");
   if(o.classList.contains("open")){ document.getElementById("searchInput").focus(); doSearch(""); }
@@ -1090,7 +1143,13 @@ function doSearch(q){
     ? res.slice(0,10).map(r=>`<a class="sr-item" href="${r.url}" onclick="toggleSearch()"><span class="sr-type">${r.type}</span><div class="sr-title">${r.title}</div></a>`).join("")
     : `<div style="padding:20px;color:var(--muted);font-size:.9rem">No results for "${q}". Try "eBay", "margin" or "ROAS".</div>`;
 }
-document.addEventListener("keydown",e=>{ if(e.key==="/"&&!["INPUT","TEXTAREA"].includes(document.activeElement.tagName)){ e.preventDefault(); toggleSearch(); } if(e.key==="Escape"){ document.getElementById("searchOverlay").classList.remove("open"); } });
+document.addEventListener("keydown",e=>{
+  if(e.key==="/"&&!["INPUT","TEXTAREA"].includes(document.activeElement.tagName)){ e.preventDefault(); toggleSearch(); }
+  if(e.key==="Escape"){
+    document.getElementById("searchOverlay").classList.remove("open");
+    setMobileMenu(false);
+  }
+});
 // theme init
 (function(){ const s=localStorage.getItem("sm-theme"); if(s) document.documentElement.setAttribute("data-theme",s); else if(matchMedia("(prefers-color-scheme: dark)").matches) document.documentElement.setAttribute("data-theme","dark"); })();
 // marketplace dropdown
