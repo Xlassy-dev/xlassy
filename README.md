@@ -9,6 +9,12 @@ build step is needed. Enable **Web Analytics** for the project in the Vercel
 dashboard and redeploy to start collecting visits. The plain HTML integration
 tracks page loads but does not automatically track client-side route changes.
 
+## Vercel Speed Insights
+
+The site includes Vercel's HTML Speed Insights snippet; no package or build
+step is needed. Deploy the site to Vercel and visit it to start collecting
+performance metrics.
+
 ## Contact email setup
 
 The contact endpoint sends an inquiry to the configured Gmail inbox and sends
