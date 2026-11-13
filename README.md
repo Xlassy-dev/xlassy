@@ -2,6 +2,13 @@
 
 Static SellerMargin site with a Vercel serverless contact endpoint.
 
+## Vercel Web Analytics
+
+The site includes Vercel's HTML analytics snippet; no analytics package or
+build step is needed. Enable **Web Analytics** for the project in the Vercel
+dashboard and redeploy to start collecting visits. The plain HTML integration
+tracks page loads but does not automatically track client-side route changes.
+
 ## Contact email setup
 
 The contact endpoint sends an inquiry to the configured Gmail inbox and sends
