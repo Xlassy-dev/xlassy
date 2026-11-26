@@ -69,10 +69,10 @@ header.scrolled{background:color-mix(in srgb,var(--bg) 94%,transparent);box-shad
 .hamburger[aria-expanded="true"] .hamburger-icon span:nth-child(1){top:6px;transform:rotate(45deg)}
 .hamburger[aria-expanded="true"] .hamburger-icon span:nth-child(2){opacity:0;transform:scaleX(.4)}
 .hamburger[aria-expanded="true"] .hamburger-icon span:nth-child(3){top:6px;transform:rotate(-45deg)}
-.mobile-menu{display:flex;position:absolute;top:68px;left:0;right:0;background:var(--card);border-bottom:1px solid var(--border);padding:0 24px;flex-direction:column;gap:4px;max-height:0;overflow:hidden;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-10px);box-shadow:var(--shadow-lg);transition:max-height .3s ease,padding .25s ease,opacity .2s ease,transform .25s ease,visibility 0s linear .3s}
-.mobile-menu.open{max-height:calc(100vh - 68px);padding:14px 24px 18px;opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0);transition:max-height .3s ease,padding .25s ease,opacity .2s ease,transform .25s ease,visibility 0s}
-.mobile-menu a{text-decoration:none;color:var(--text);font-weight:500;padding:12px 10px;border-bottom:1px solid var(--border);border-radius:8px;opacity:0;transform:translateY(-7px);transition:color .2s,background .2s,border-color .2s,opacity .2s ease,transform .25s ease}
-.mobile-menu.open a{opacity:1;transform:translateY(0)}
+.mobile-menu{display:flex;position:absolute;top:100%;left:0;right:0;background:var(--card);border-bottom:1px solid var(--border);padding:0 24px;flex-direction:column;gap:4px;max-height:0;overflow-x:hidden;overflow-y:auto;opacity:0;visibility:hidden;pointer-events:none;transform:perspective(900px) rotateX(-12deg) translateY(-10px);transform-origin:top center;box-shadow:var(--shadow-lg);transition:max-height .34s ease,padding .25s ease,opacity .2s ease,transform .3s ease,visibility 0s linear .34s}
+.mobile-menu.open{max-height:calc(100vh - 68px);padding:14px 24px 18px;opacity:1;visibility:visible;pointer-events:auto;transform:perspective(900px) rotateX(0) translateY(0);transition:max-height .34s ease,padding .25s ease,opacity .2s ease,transform .3s ease,visibility 0s}
+.mobile-menu a{text-decoration:none;color:var(--text);font-weight:500;padding:12px 10px;border-bottom:1px solid var(--border);border-radius:8px;opacity:0;transform:perspective(700px) rotateX(-18deg) translateY(-7px);transform-origin:top center;transition:color .2s,background .2s,border-color .2s,opacity .2s ease,transform .25s ease}
+.mobile-menu.open a{opacity:1;transform:perspective(700px) rotateX(0) translateY(0)}
 .mobile-menu.open a:nth-child(1){transition-delay:.02s}
 .mobile-menu.open a:nth-child(2){transition-delay:.04s}
 .mobile-menu.open a:nth-child(3){transition-delay:.06s}
@@ -81,8 +81,12 @@ header.scrolled{background:color-mix(in srgb,var(--bg) 94%,transparent);box-shad
 .mobile-menu.open a:nth-child(6){transition-delay:.12s}
 .mobile-menu.open a:nth-child(7){transition-delay:.14s}
 .mobile-menu a:hover,.mobile-menu a.active{color:var(--accent-ink);background:color-mix(in srgb,var(--accent) 9%,transparent)}
+.mobile-marketplaces{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:8px 0 10px}
+.mobile-marketplaces a{padding:9px 10px;border:1px solid var(--border);font-size:.88rem}
+.mobile-menu.open .mobile-marketplaces a{transition-delay:.16s}
+.mobile-menu a:focus-visible,.hamburger:focus-visible,.icon-btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 @media(min-width:881px){.mobile-menu{display:none}}
-@media(max-width:880px){.nav-links{display:none}.hamburger{display:grid}}
+@media(max-width:880px){.nav-links{display:none}.hamburger{display:grid}.nav-right>.btn{display:none}}
 /* HERO */
 .hero{padding:96px 0 72px;position:relative;overflow:hidden}
 .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
@@ -227,7 +231,6 @@ footer a:hover{color:var(--text)}
   .logo{font-size:1.08rem;gap:7px;margin-right:0}
   .logo-mark{width:28px;height:28px}
   .nav-right{gap:6px}
-  .nav-right>.btn{display:none}
   .icon-btn{width:36px;height:36px}
   .hero{padding:64px 0 48px}
   .hero-grid{gap:32px}
@@ -245,7 +248,7 @@ footer a:hover{color:var(--text)}
   .formula{padding:14px 16px;font-size:.82rem;overflow-wrap:anywhere}
   .ad-slot{height:auto;min-height:90px;padding:12px;text-align:center}
   #searchOverlay{padding:10vh 16px}
-  .mobile-menu.open{padding-left:16px;padding-right:16px}
+  .mobile-menu,.mobile-menu.open{padding-left:16px;padding-right:16px}
 }
 @media(max-width:380px){
   .container{padding:0 14px}
@@ -259,7 +262,7 @@ footer a:hover{color:var(--text)}
 }
 @media(prefers-reduced-motion:reduce){
   header,.logo-mark,.nav-links>a::after,#mkWrap>a::after,.icon-btn,.hamburger-icon span,.mobile-menu,.mobile-menu a{transition-duration:.01ms!important}
-  .logo:hover .logo-mark,.icon-btn:hover{transform:none}
+  .logo:hover .logo-mark,.icon-btn:hover,.mobile-menu,.mobile-menu a{transform:none}
 }
 </style>
 </head>
@@ -298,14 +301,21 @@ footer a:hover{color:var(--text)}
       </button>
     </div>
   </div>
-  <nav class="mobile-menu" id="mobileMenu" aria-label="Mobile">
-    <a href="#/" onclick="toggleMobile()">Home</a>
-    <a href="#/calculators" onclick="toggleMobile()">Calculators</a>
-    <a href="#/compare" onclick="toggleMobile()">Marketplace Comparison</a>
-    <a href="#/guides" onclick="toggleMobile()">Seller Guides</a>
-    <a href="#/pricing" onclick="toggleMobile()">Pricing</a>
-    <a href="#/about" onclick="toggleMobile()">About</a>
-    <a href="#/contact" onclick="toggleMobile()">Contact</a>
+  <nav class="mobile-menu" id="mobileMenu" aria-label="Mobile" aria-hidden="true">
+    <a href="#/" onclick="setMobileMenu(false)">Home</a>
+    <a href="#/calculators" onclick="setMobileMenu(false)">Calculators</a>
+    <a href="#/compare" onclick="setMobileMenu(false)">Marketplace Comparison</a>
+    <div class="mobile-marketplaces" aria-label="Marketplace tools">
+      <a href="#/amazon" onclick="setMobileMenu(false)">Amazon</a>
+      <a href="#/ebay" onclick="setMobileMenu(false)">eBay</a>
+      <a href="#/shopify" onclick="setMobileMenu(false)">Shopify</a>
+      <a href="#/etsy" onclick="setMobileMenu(false)">Etsy</a>
+      <a href="#/walmart" onclick="setMobileMenu(false)">Walmart</a>
+    </div>
+    <a href="#/guides" onclick="setMobileMenu(false)">Seller Guides</a>
+    <a href="#/pricing" onclick="setMobileMenu(false)">Pricing</a>
+    <a href="#/about" onclick="setMobileMenu(false)">About</a>
+    <a href="#/contact" onclick="setMobileMenu(false)">Contact</a>
   </nav>
 </header>
 
@@ -1130,8 +1140,14 @@ function setMobileMenu(open){
   menu.classList.toggle("open",open);
   button.setAttribute("aria-expanded",String(open));
   button.setAttribute("aria-label",open?"Close menu":"Menu");
+  menu.setAttribute("aria-hidden",String(!open));
 }
 function toggleMobile(){ setMobileMenu(!document.getElementById("mobileMenu").classList.contains("open")); }
+window.addEventListener("hashchange",()=>setMobileMenu(false));
+window.addEventListener("resize",()=>{ if(window.innerWidth>880) setMobileMenu(false); },{passive:true});
+document.addEventListener("click",e=>{
+  if(!e.target.closest("header")&&document.getElementById("mobileMenu").classList.contains("open")) setMobileMenu(false);
+});
 function toggleSearch(){
   const o=document.getElementById("searchOverlay"); o.classList.toggle("open");
   if(o.classList.contains("open")){ document.getElementById("searchInput").focus(); doSearch(""); }
