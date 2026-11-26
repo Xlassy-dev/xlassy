@@ -34,7 +34,7 @@ h3{font-size:1.15rem;font-weight:600}
 p{color:var(--muted)}
 .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:.78rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
 .eyebrow::before{content:"";width:24px;height:1px;background:var(--accent)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:600;font-size:.95rem;padding:13px 26px;border-radius:10px;border:1px solid transparent;cursor:pointer;transition:all .2s;text-decoration:none;font-family:inherit}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:600;font-size:.95rem;padding:13px 26px;border-radius:10px;border:1px solid transparent;cursor:pointer;transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s,border-color .2s,background .2s;text-decoration:none;font-family:inherit;transform-style:preserve-3d}
 .btn-primary{background:var(--text);color:var(--bg)}
 .btn-primary:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
 [data-theme="dark"] .btn-primary{background:var(--accent);color:#0B0F14}
@@ -48,8 +48,8 @@ header.scrolled{background:color-mix(in srgb,var(--bg) 94%,transparent);box-shad
 [data-theme="dark"] header.scrolled{box-shadow:0 10px 30px rgba(0,0,0,.24)}
 .nav{display:flex;align-items:center;gap:8px;height:68px}
 .logo{font-weight:800;font-size:1.25rem;letter-spacing:-.02em;text-decoration:none;color:var(--text);display:flex;align-items:center;gap:9px;margin-right:14px}
-.logo-mark{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#C9A227,#7A6114);display:grid;place-items:center;color:#fff;font-size:.85rem;font-weight:800;transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .25s}
-.logo:hover .logo-mark{transform:rotate(-8deg) scale(1.06);box-shadow:0 5px 14px rgba(201,162,39,.28)}
+.logo-mark{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#C9A227,#7A6114);display:grid;place-items:center;color:#fff;font-size:.85rem;font-weight:800;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.2,.8,.2,1),box-shadow .25s}
+.logo:hover .logo-mark{transform:perspective(220px) rotateX(12deg) rotateY(-18deg) rotateZ(-6deg) scale(1.08);box-shadow:0 8px 18px rgba(201,162,39,.3)}
 .nav-links{display:flex;gap:4px;flex:1}
 .nav-links a{text-decoration:none;color:var(--muted);font-size:.9rem;font-weight:500;padding:8px 12px;border-radius:8px;transition:color .2s,background .2s}
 .nav-links a:hover{color:var(--text);background:color-mix(in srgb,var(--text) 5%,transparent)}
@@ -98,7 +98,7 @@ header.scrolled{background:color-mix(in srgb,var(--bg) 94%,transparent);box-shad
 .proof-item b{font-size:1.4rem;font-weight:800;display:block}
 .proof-item span{font-size:.82rem;color:var(--muted)}
 /* CALCULATOR UI */
-.calc-card{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:26px}
+.calc-card{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:26px;transform-style:preserve-3d;backface-visibility:hidden;transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .3s}
 .calc-card .cc-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
 .calc-card .cc-head h3{font-size:1rem}
 .badge-live{font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--emerald);background:color-mix(in srgb,var(--emerald) 10%,transparent);padding:4px 10px;border-radius:20px}
@@ -137,9 +137,8 @@ section{padding:80px 0}
 .cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
 @media(max-width:940px){.cards-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:600px){.cards-grid{grid-template-columns:1fr}}
-.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;transition:all .25s;position:relative}
-.card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:color-mix(in srgb,var(--accent) 40%,var(--border))}
-.card-icon{width:44px;height:44px;border-radius:11px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 14%,transparent),color-mix(in srgb,var(--emerald) 10%,transparent));display:grid;place-items:center;font-size:1.2rem;margin-bottom:16px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .3s,border-color .25s;position:relative;transform-style:preserve-3d;backface-visibility:hidden}
+.card-icon{width:44px;height:44px;border-radius:11px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 14%,transparent),color-mix(in srgb,var(--emerald) 10%,transparent));display:grid;place-items:center;font-size:1.2rem;margin-bottom:16px;transform:translateZ(10px);transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .3s}
 .card h3{margin-bottom:8px}
 .card p{font-size:.9rem}
 .card a.tool-link{display:inline-block;margin-top:14px;font-size:.85rem;font-weight:600;color:var(--accent);text-decoration:none}
@@ -174,18 +173,24 @@ td .neg{color:#DC2626;font-weight:700}
 .faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease}
 .faq-a p{padding:0 22px 18px;font-size:.9rem}
 /* FOOTER */
-footer{border-top:1px solid var(--border);background:var(--card);padding:64px 0 32px;margin-top:40px}
-.footer-grid{display:grid;grid-template-columns:1.4fr repeat(4,1fr);gap:32px}
-@media(max-width:880px){.footer-grid{grid-template-columns:repeat(2,1fr)}}
-footer h4{font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:16px}
-footer a{display:block;color:var(--muted);text-decoration:none;font-size:.88rem;padding:5px 0;transition:color .15s}
-footer a:hover{color:var(--text)}
-.footer-bottom{margin-top:48px;padding-top:24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:.85rem;color:var(--muted)}
+footer{border-top:1px solid var(--border);background:linear-gradient(180deg,var(--card),color-mix(in srgb,var(--accent) 4%,var(--bg)));padding:64px 0 28px;margin-top:40px;perspective:1200px}
+.footer-grid{display:grid;grid-template-columns:minmax(220px,1.5fr) repeat(4,minmax(120px,1fr));gap:28px}
+@media(max-width:880px){.footer-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:30px 24px}}
+footer h4{font-size:.76rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:9px}
+footer h4::before{content:"";width:16px;height:2px;border-radius:2px;background:var(--accent)}
+footer a{display:block;color:var(--muted);text-decoration:none;font-size:.88rem;padding:5px 0;transition:color .2s,transform .25s}
+footer .footer-column a:hover{color:var(--accent-ink);transform:translateX(4px) translateZ(6px)}
+.footer-brand p{max-width:280px;font-size:.9rem}
+.footer-action{display:inline-flex;align-items:center;gap:10px;margin-top:18px;padding:10px 14px;border:1px solid color-mix(in srgb,var(--accent) 45%,var(--border));border-radius:10px;color:var(--text);font-size:.85rem;font-weight:700;transition:transform .25s,box-shadow .25s,background .2s}
+.footer-action:hover{transform:perspective(400px) rotateX(7deg) translateY(-2px);box-shadow:0 8px 18px rgba(17,24,39,.1);background:color-mix(in srgb,var(--accent) 10%,var(--card))}
+.footer-action span{color:var(--accent);font-size:1.1rem}
+.footer-grid>div{transform-style:preserve-3d}
+.footer-bottom{margin-top:44px;padding-top:22px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:.83rem;color:var(--muted)}
 /* TOAST */
 #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--text);color:var(--bg);padding:12px 22px;border-radius:10px;font-size:.88rem;font-weight:600;opacity:0;transition:all .3s;z-index:200;pointer-events:none}
 #toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 /* PRICING */
-.price-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:34px;transition:all .25s;position:relative}
+.price-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:34px;transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .3s,border-color .25s;position:relative;transform-style:preserve-3d;backface-visibility:hidden}
 .price-card.featured{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),var(--shadow-lg)}
 .price-card .plan-name{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--accent)}
 .price-card .amount{font-size:2.6rem;font-weight:800;letter-spacing:-.03em;margin:12px 0}
@@ -231,6 +236,16 @@ footer a:hover{color:var(--text)}
 .stat-hero{display:flex;gap:36px;flex-wrap:wrap;margin-top:48px}
 .fade-in{animation:fadeUp .5s ease both}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.hero,#app>section,footer,.card,.price-card,.calc-card,.faq-item,.cta-band,.content-block,.legal-page,.step,.guide-item{animation:depthEnter .65s cubic-bezier(.2,.8,.2,1)}
+@keyframes depthEnter{from{opacity:0;transform:perspective(1000px) rotateX(5deg) translateY(14px) translateZ(-12px)}to{opacity:1;transform:perspective(1000px) rotateX(0) translateY(0) translateZ(0)}}
+@media(hover:hover) and (pointer:fine){
+  .card:hover{transform:perspective(1000px) rotateX(2deg) rotateY(-2deg) translateY(-4px) translateZ(4px);box-shadow:var(--shadow-lg);border-color:color-mix(in srgb,var(--accent) 40%,var(--border))}
+  .card:hover .card-icon{transform:translateZ(24px) rotateY(10deg) rotateX(-8deg);box-shadow:0 10px 20px color-mix(in srgb,var(--accent) 18%,transparent)}
+  .price-card:hover{transform:perspective(1100px) rotateX(2deg) rotateY(-1deg) translateY(-5px) translateZ(5px);box-shadow:var(--shadow-lg)}
+  .calc-card:hover{transform:perspective(1400px) rotateX(.6deg) translateY(-2px);box-shadow:var(--shadow-lg)}
+  .faq-item:hover,.cta-band:hover{transform:perspective(1200px) rotateX(1deg) translateY(-2px)}
+  .btn:hover{transform:perspective(500px) rotateX(5deg) translateY(-2px)}
+}
 @media(max-width:600px){
   .container{padding:0 16px}
   .hero-grid,.two-col,.cards-grid{grid-template-columns:minmax(0,1fr)}
@@ -249,6 +264,7 @@ footer a:hover{color:var(--text)}
   .price-card{padding:24px}
   .cta-band{padding:40px 22px}
   .footer-grid{gap:24px 16px}
+  .footer-brand{grid-column:1/-1}
   .footer-bottom{margin-top:32px;align-items:flex-start}
   .result-mini{padding:10px}
   .result-main .rm-value{font-size:1.65rem}
@@ -268,8 +284,9 @@ footer a:hover{color:var(--text)}
   .footer-bottom{flex-direction:column}
 }
 @media(prefers-reduced-motion:reduce){
-  header,.logo-mark,.nav-links>a::after,#mkWrap>a::after,.icon-btn,.hamburger-icon span,.mobile-menu,.mobile-menu a{transition-duration:.01ms!important}
-  .logo:hover .logo-mark,.icon-btn:hover,.mobile-menu,.mobile-menu a{transform:none}
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .logo:hover .logo-mark,.icon-btn:hover,.mobile-menu,.mobile-menu a,.card:hover,.card:hover .card-icon,.price-card:hover,.calc-card:hover,.faq-item:hover,.cta-band:hover,.btn:hover,.footer-action:hover,footer .footer-column a:hover{transform:none!important}
 }
 </style>
 </head>
@@ -331,11 +348,12 @@ footer a:hover{color:var(--text)}
 <footer>
   <div class="container">
     <div class="footer-grid">
-      <div>
+      <div class="footer-brand">
         <a class="logo" href="#/" style="margin-bottom:14px"><span class="logo-mark">S</span>SellerMargin</a>
-        <p style="font-size:.88rem;max-width:240px">Know Your Real Selling Profit. Calculate fees, margins and ROI across every major marketplace.</p>
+        <p>Know Your Real Selling Profit. Calculate fees, margins and ROI across every major marketplace.</p>
+        <a class="footer-action" href="#/calculators">Explore free calculators <span aria-hidden="true">→</span></a>
       </div>
-      <div>
+      <div class="footer-column">
         <h4>Products</h4>
         <a href="#/calculators">Profit Calculators</a>
         <a href="#/amazon">Amazon Tools</a>
@@ -343,19 +361,19 @@ footer a:hover{color:var(--text)}
         <a href="#/shopify">Shopify Tools</a>
         <a href="#/compare">Comparison Tools</a>
       </div>
-      <div>
+      <div class="footer-column">
         <h4>Resources</h4>
         <a href="#/guides">Seller Guides</a>
         <a href="#/faq">FAQ</a>
         <a href="#/methodology">Methodology</a>
         <a href="#/fee-data">Fee Data</a>
       </div>
-      <div>
+      <div class="footer-column">
         <h4>Company</h4>
         <a href="#/about">About</a>
         <a href="#/contact">Contact</a>
       </div>
-      <div>
+      <div class="footer-column">
         <h4>Legal</h4>
         <a href="#/privacy">Privacy Policy</a>
         <a href="#/terms">Terms</a>
