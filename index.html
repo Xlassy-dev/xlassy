@@ -110,6 +110,13 @@ header.scrolled{background:color-mix(in srgb,var(--bg) 94%,transparent);box-shad
 .field .prefix{padding:0 12px;color:var(--muted);font-size:.9rem;font-weight:600;user-select:none}
 .field input{flex:1;min-width:0;background:transparent;border:none;outline:none;padding:12px 14px 12px 0;font-size:1rem;font-weight:600;color:var(--text);font-family:inherit}
 .field .suffix{padding:0 12px;color:var(--muted);font-size:.85rem;user-select:none}
+.field select{width:100%;padding:12px 14px;background:var(--bg);border:1px solid var(--border);border-radius:10px;color:var(--text);font:inherit}
+.country-fees{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:12px 0 18px}
+.country-rate{padding:12px;border:1px solid var(--border);border-radius:10px;background:var(--bg)}
+.country-rate strong{display:block;margin-bottom:8px;font-size:.88rem}
+.country-rate label{display:block;margin-top:8px;font-size:.75rem;font-weight:600;color:var(--muted)}
+.country-rate input{width:100%;margin-top:4px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font:inherit}
+.country-note{font-size:.82rem;margin:10px 0 4px}
 .field.error .input-wrap{border-color:#DC2626}
 .field .err-msg{font-size:.75rem;color:#DC2626;margin-top:4px;display:none}
 .field.error .err-msg{display:block}
@@ -390,19 +397,97 @@ const FEE_DATA = {
     walmart: { name:"Walmart", referralPct:0.15, fixedFee:0,    fulfillmentPct:0,    paymentPct:0,  paymentFixed:0,   categories:["Referral fee 15%"] }
   }
 };
+const COUNTRY_CODES = "AD AE AF AG AI AL AM AO AQ AR AS AT AU AW AX AZ BA BB BD BE BF BG BH BI BJ BL BM BN BO BQ BR BS BT BV BW BY BZ CA CC CD CF CG CH CI CK CL CM CN CO CR CU CV CW CX CY CZ DE DJ DK DM DO DZ EC EE EG EH ER ES ET FI FJ FK FM FO FR GA GB GD GE GF GG GH GI GL GM GN GP GQ GR GS GT GU GW GY HK HM HN HR HT HU ID IE IL IM IN IO IQ IR IS IT JE JM JO JP KE KG KH KI KM KN KP KR KW KY KZ LA LB LC LI LK LR LS LT LU LV LY MA MC MD ME MF MG MH MK ML MM MN MO MP MQ MR MS MT MU MV MW MX MY MZ NA NC NE NF NG NI NL NO NP NR NU NZ OM PA PE PF PG PH PK PL PM PN PR PS PT PW PY QA RE RO RS RU RW SA SB SC SD SE SG SH SI SJ SK SL SM SN SO SR SS ST SV SX SY SZ TC TD TF TG TH TJ TK TL TM TN TO TR TT TV TW TZ UA UG UM US UY UZ VA VC VE VG VI VN VU WF WS XK YE YT ZA ZM ZW".split(" ");
+const COUNTRY_NAMES = typeof Intl.DisplayNames==="function" ? new Intl.DisplayNames(["en"],{type:"region"}) : null;
+const COUNTRY_OPTIONS = COUNTRY_CODES.map(code=>({code,name:COUNTRY_NAMES?COUNTRY_NAMES.of(code):code})).sort((a,b)=>a.name.localeCompare(b.name));
+const CURRENCY_CODES = typeof Intl.supportedValuesOf==="function" ? Intl.supportedValuesOf("currency") : ["AUD","CAD","CHF","CNY","EUR","GBP","INR","JPY","NZD","USD"];
+const COUNTRY_CURRENCIES = {US:"USD",GB:"GBP",CA:"CAD",AU:"AUD",NZ:"NZD",IN:"INR",JP:"JPY",CN:"CNY",CH:"CHF",DE:"EUR",FR:"EUR",IT:"EUR",ES:"EUR",NL:"EUR",BE:"EUR",IE:"EUR",AT:"EUR",PT:"EUR",GR:"EUR",FI:"EUR",BR:"BRL",MX:"MXN",SG:"SGD",HK:"HKD",KR:"KRW",ZA:"ZAR",AE:"AED",SA:"SAR",SE:"SEK",NO:"NOK",DK:"DKK",PL:"PLN",TR:"TRY",ID:"IDR",MY:"MYR",TH:"THB",PH:"PHP",VN:"VND"};
+const COUNTRY_FEE_RATES = {};
+let currentCompareCountry="US", currentCompareCurrency="USD";
+function countrySelectOptions(selected="US"){ return COUNTRY_OPTIONS.map(c=>`<option value="${c.code}"${c.code===selected?" selected":""}>${c.name}</option>`).join(""); }
+function currencySelectOptions(selected="USD"){ return `<option value="">Select currency</option>${CURRENCY_CODES.map(c=>`<option value="${c}"${c===selected?" selected":""}>${c}</option>`).join("")}`; }
+function countryDefaultRates(code){
+  if(COUNTRY_FEE_RATES[code]) return COUNTRY_FEE_RATES[code];
+  if(code!=="US") return {};
+  return Object.fromEntries(Object.entries(FEE_DATA.marketplaces).map(([key,f])=>[key,{feePct:(f.referralPct+f.paymentPct)*100,fixedFee:f.fixedFee+f.paymentFixed}]));
+}
+function setCountryMarketplaceRate(code,key,rate){
+  if(!COUNTRY_FEE_RATES[code]) COUNTRY_FEE_RATES[code]={...countryDefaultRates(code)};
+  COUNTRY_FEE_RATES[code][key]=rate;
+}
+function saveCountryRates(code=document.getElementById("cmpCountry").value){
+  const rates={};
+  Object.keys(FEE_DATA.marketplaces).forEach(key=>{
+    const feePct=document.getElementById("cmpRatePct-"+key).value.trim();
+    const fixedFee=document.getElementById("cmpRateFixed-"+key).value.trim();
+    const pct=Number(feePct), fixed=Number(fixedFee);
+    rates[key]=feePct!==""&&fixedFee!==""&&Number.isFinite(pct)&&pct>=0&&pct<=100&&Number.isFinite(fixed)&&fixed>=0?{feePct:pct,fixedFee:fixed}:null;
+  });
+  COUNTRY_FEE_RATES[code]=rates;
+}
+function loadCountryRates(code){
+  const rates=countryDefaultRates(code);
+  Object.keys(FEE_DATA.marketplaces).forEach(key=>{
+    const rate=rates[key];
+    document.getElementById("cmpRatePct-"+key).value=rate?rate.feePct:"";
+    document.getElementById("cmpRateFixed-"+key).value=rate?rate.fixedFee:"";
+  });
+}
+function feeToolControls(cfg){
+  const rate=countryDefaultRates("US")[cfg.feeKey];
+  return `<div class="field"><label for="toolCountry-${cfg.id}">Country / marketplace region</label><select id="toolCountry-${cfg.id}" data-current-country="US" onchange="changeFeeToolCountry('${cfg.id}','${cfg.feeKey}',this.value)">${countrySelectOptions("US")}</select></div>
+    <div class="field"><label for="toolCurrency-${cfg.id}">Currency for all amounts (no conversion)</label><select id="toolCurrency-${cfg.id}" onchange="changeFeeToolCurrency('${cfg.id}',this.value)">${currencySelectOptions("USD")}</select></div>
+    <div class="country-rate" style="margin-bottom:14px"><strong>${FEE_DATA.marketplaces[cfg.feeKey].name} fee rate</strong><p class="country-note">US preset is prefilled. For other countries, enter the current rate from the official fee schedule.</p>
+      <label for="toolRatePct-${cfg.id}">Total fee rate (%)</label><input type="number" id="toolRatePct-${cfg.id}" min="0" max="100" step="any" value="${rate?rate.feePct:""}" oninput="updateFeeToolRate('${cfg.id}','${cfg.feeKey}')">
+      <label for="toolRateFixed-${cfg.id}">Flat fee per order (<span class="tool-currency-label">USD</span>)</label><input type="number" id="toolRateFixed-${cfg.id}" min="0" step="any" value="${rate?rate.fixedFee:""}" oninput="updateFeeToolRate('${cfg.id}','${cfg.feeKey}')">
+    </div>`;
+}
+function setFeeToolCurrency(id,currency){
+  const root=document.getElementById("toolCalc");
+  root.querySelectorAll(".calc-currency-prefix").forEach(el=>el.textContent=currency||"—");
+  root.querySelectorAll(".tool-currency-label").forEach(el=>el.textContent=currency||"—");
+}
+function saveFeeToolRate(id,key,code=document.getElementById("toolCountry-"+id).value){
+  const pctText=document.getElementById("toolRatePct-"+id).value.trim();
+  const fixedText=document.getElementById("toolRateFixed-"+id).value.trim();
+  const feePct=Number(pctText), fixedFee=Number(fixedText);
+  const rate=pctText!==""&&fixedText!==""&&Number.isFinite(feePct)&&feePct>=0&&feePct<=100&&Number.isFinite(fixedFee)&&fixedFee>=0?{feePct,fixedFee}:null;
+  setCountryMarketplaceRate(code,key,rate);
+}
+function changeFeeToolCountry(id,key,code){
+  const select=document.getElementById("toolCountry-"+id);
+  saveFeeToolRate(id,key,select.dataset.currentCountry||"US");
+  select.dataset.currentCountry=code;
+  const currency=COUNTRY_CURRENCIES[code]||"";
+  document.getElementById("toolCurrency-"+id).value=currency;
+  const rate=countryDefaultRates(code)[key];
+  document.getElementById("toolRatePct-"+id).value=rate?rate.feePct:"";
+  document.getElementById("toolRateFixed-"+id).value=rate?rate.fixedFee:"";
+  setFeeToolCurrency(id,currency);
+  runCalc(id,true);
+}
+function changeFeeToolCurrency(id,currency){
+  setFeeToolCurrency(id,currency);
+  runCalc(id,true);
+}
+function updateFeeToolRate(id,key){
+  saveFeeToolRate(id,key);
+  runCalc(id,true);
+}
 
 /* ================= CALCULATOR ENGINE (generic, reusable) ================= */
-function money(v){ if(!isFinite(v)) return "—"; const neg=v<0; return (neg?"-":"")+"$"+Math.abs(v).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function money(v,currency="USD"){ if(!isFinite(v)) return "—"; return new Intl.NumberFormat("en-US",{style:"currency",currency,minimumFractionDigits:2,maximumFractionDigits:2}).format(v); }
 function pct(v){ if(!isFinite(v)) return "—"; return v.toFixed(1)+"%"; }
 
 function buildCalculator(el, cfg){
   el.innerHTML = `
     <div class="calc-card">
       <div class="cc-head"><h3>${cfg.title}</h3><span class="badge-live">Live</span></div>
+    ${cfg.feeKey?feeToolControls(cfg):""}
       ${cfg.fields.map(f=>`
         <div class="field" id="fld-${f.id}">
           <label>${f.label} ${f.tip?`<span class="tip" title="${f.tip}">?</span>`:""}</label>
-          <div class="input-wrap">${f.prefix?`<span class="prefix">${f.prefix}</span>`:""}
+        <div class="input-wrap">${f.prefix?`<span class="prefix ${cfg.feeKey?"calc-currency-prefix":""}">${f.prefix}</span>`:""}
             <input type="number" id="in-${f.id}" inputmode="decimal" placeholder="${f.placeholder||"0.00"}" min="0" step="any">
             ${f.suffix?`<span class="suffix">${f.suffix}</span>`:""}
           </div>
@@ -417,6 +502,7 @@ function buildCalculator(el, cfg){
     </div>`;
   window.__calcs = window.__calcs || {};
   window.__calcs[cfg.id] = cfg;
+  if(cfg.feeKey) setFeeToolCurrency(cfg.id,"USD");
   if(cfg.instant){
     cfg.fields.forEach(f=> el.querySelector("#in-"+f.id).addEventListener("input",()=>runCalc(cfg.id,true)));
     el.querySelector(`#res-${cfg.id}`).innerHTML = emptyState();
@@ -435,6 +521,18 @@ function runCalc(id, silent){
   const resEl=document.getElementById("res-"+id);
   if(hasError){ if(!silent) toast("Please fix the highlighted fields."); return; }
   if(!anyValue){ resEl.innerHTML=emptyState(); return; }
+  if(cfg.feeKey){
+    const feePct=document.getElementById("toolRatePct-"+id).value.trim();
+    const fixedFee=document.getElementById("toolRateFixed-"+id).value.trim();
+    const currency=document.getElementById("toolCurrency-"+id).value;
+    if(feePct===""||fixedFee===""||!currency||!Number.isFinite(Number(feePct))||Number(feePct)<0||Number(feePct)>100||!Number.isFinite(Number(fixedFee))||Number(fixedFee)<0){
+      resEl.innerHTML='<div class="trust-panel">Select a currency and enter a valid fee rate and flat fee for this country.</div>';
+      return;
+    }
+    vals.feePct=Number(feePct);
+    vals.feeFixed=Number(fixedFee);
+    vals.currency=currency;
+  }
   const out = cfg.compute(vals);
   window.__lastResults = window.__lastResults||{}; window.__lastResults[id]=out;
   resEl.innerHTML = `<div class="results">${out.map(r=> r.main
@@ -513,11 +611,11 @@ const TOOLS = {
     {id:"ads",label:"Advertising Cost",prefix:"$",tip:"Promoted listings % or per-unit ad cost."},
     {id:"other",label:"Other Expenses",prefix:"$"}
   ], feeKey:"ebay", compute:v=>{
-    const f=FEE_DATA.marketplaces.ebay;
-    const fees=v.price*f.referralPct+f.fixedFee+v.ads+v.other;
+    const referral=v.price*v.feePct/100;
+    const fees=referral+v.feeFixed+v.ads+v.other;
     const profit=v.price-v.cost-v.shipping-fees;
     const margin=v.price>0?profit/v.price*100:NaN, roi=v.cost>0?profit/v.cost*100:NaN;
-    return [{label:"Net Profit",value:money(profit),main:true,neg:profit<0},{label:"Profit Margin",value:pct(margin),neg:margin<0},{label:"ROI",value:pct(roi),neg:roi<0},{label:"eBay Fees",value:money(v.price*f.referralPct+f.fixedFee)},{label:"Total Costs",value:money(v.cost+v.shipping+fees)},{label:"Break-Even Price",value:money(v.cost+v.shipping+v.ads+v.other+f.fixedFee/(1-f.referralPct))}];
+    return [{label:"Net Profit",value:money(profit,v.currency),main:true,neg:profit<0},{label:"Profit Margin",value:pct(margin),neg:margin<0},{label:"ROI",value:pct(roi),neg:roi<0},{label:"eBay Fees",value:money(referral+v.feeFixed,v.currency)},{label:"Total Costs",value:money(v.cost+v.shipping+fees,v.currency)},{label:"Break-Even Price",value:money((v.cost+v.shipping+v.ads+v.other+v.feeFixed)/(1-v.feePct/100),v.currency)}];
   }},
   "amazon-fba-profit-calculator": { cat:"Amazon", title:"Amazon FBA Profit Calculator", desc:"Estimate your Amazon FBA profit after referral fees and fulfillment costs.", fields:[
     {id:"cost",label:"Product Cost",prefix:"$"},
@@ -526,10 +624,9 @@ const TOOLS = {
     {id:"ads",label:"Advertising Cost",prefix:"$"},
     {id:"other",label:"Other Expenses",prefix:"$"}
   ], feeKey:"amazon", compute:v=>{
-    const f=FEE_DATA.marketplaces.amazon;
-    const referral=v.price*f.referralPct, profit=v.price-v.cost-v.fba-referral-v.ads-v.other;
+    const referral=v.price*v.feePct/100+v.feeFixed, profit=v.price-v.cost-v.fba-referral-v.ads-v.other;
     const margin=v.price>0?profit/v.price*100:NaN, roi=v.cost>0?profit/v.cost*100:NaN;
-    return [{label:"Net Profit",value:money(profit),main:true,neg:profit<0},{label:"Profit Margin",value:pct(margin),neg:margin<0},{label:"ROI",value:pct(roi),neg:roi<0},{label:"Referral Fee",value:money(referral)},{label:"Total Costs",value:money(v.cost+v.fba+referral+v.ads+v.other)},{label:"Break-Even Price",value:money((v.cost+v.fba+v.ads+v.other)/(1-f.referralPct))}];
+    return [{label:"Net Profit",value:money(profit,v.currency),main:true,neg:profit<0},{label:"Profit Margin",value:pct(margin),neg:margin<0},{label:"ROI",value:pct(roi),neg:roi<0},{label:"Referral Fee",value:money(referral,v.currency)},{label:"Total Costs",value:money(v.cost+v.fba+referral+v.ads+v.other,v.currency)},{label:"Break-Even Price",value:money((v.cost+v.fba+v.ads+v.other+v.feeFixed)/(1-v.feePct/100),v.currency)}];
   }},
   "amazon-acos-calculator": { cat:"Amazon", title:"Amazon ACoS Calculator", desc:"Measure your Advertising Cost of Sales.", fields:[
     {id:"adspend",label:"Ad Spend",prefix:"$"},
@@ -571,40 +668,41 @@ const TOOLS = {
 };
 
 /* ================= COMPARISON ENGINE ================= */
-function computeMarketplace(key, v){
-  const f=FEE_DATA.marketplaces[key];
-  const marketplaceFee = v.price*f.referralPct + f.fixedFee;
-  const paymentFee = v.price*f.paymentPct + f.paymentFixed;
-  const fees = marketplaceFee + paymentFee;
+function computeMarketplace(key, v, rate){
+  const feePct=rate.feePct/100;
+  const fees = v.price*feePct + rate.fixedFee;
   const totalCosts = v.cost + v.shipping + v.packaging + v.ads + v.returns + v.other + fees;
   const profit = v.price - totalCosts;
   const margin = v.price>0 ? profit/v.price*100 : NaN;
   const roi = v.cost>0 ? profit/v.cost*100 : NaN;
-  const denom = 1 - f.referralPct - f.paymentPct;
-  const breakeven = denom>0 ? (v.cost+v.shipping+v.packaging+v.returns+v.other+f.fixedFee+f.paymentFixed)/denom : NaN;
+  const denom = 1 - feePct;
+  const breakeven = denom>0 ? (v.cost+v.shipping+v.packaging+v.returns+v.other+rate.fixedFee)/denom : NaN;
   const maxAds = profit + v.ads;
-  return { name:f.name, profit, margin, roi, fees, totalCosts, breakeven, maxAds };
+  return { name:FEE_DATA.marketplaces[key].name, profit, margin, roi, fees, totalCosts, breakeven, maxAds };
 }
 function renderComparison(el, selected){
   const v = {}; ["cost","price","shipping","packaging","ads","returns","other"].forEach(id=>{ v[id]=parseFloat(document.getElementById("cmp-"+id).value)||0; });
-  const rows = selected.map(k=>computeMarketplace(k,v));
+  const currency=document.getElementById("cmpCurrency").value;
+  if(!currency){ el.innerHTML='<div class="trust-panel">Select the currency used for your inputs before comparing.</div>'; return; }
+  const rates=countryDefaultRates(document.getElementById("cmpCountry").value);
+  const rows = selected.map(k=>rates[k]?computeMarketplace(k,v,rates[k]):{name:FEE_DATA.marketplaces[k].name,missing:true});
   el.innerHTML = `
     <div class="table-wrap"><table>
       <thead><tr><th>Marketplace</th><th>Net Profit</th><th>Margin</th><th>ROI</th><th>Total Fees</th><th>Total Costs</th><th>Break-Even Price</th><th>Max Ad Spend</th></tr></thead>
       <tbody>${rows.map(r=>`
         <tr>
           <td><strong>${r.name}</strong></td>
-          <td class="num ${r.profit<0?'neg':''}"><span class="${r.profit>=0?'pos':'neg'}">${money(r.profit)}</span></td>
-          <td class="num">${pct(r.margin)}</td>
-          <td class="num">${pct(r.roi)}</td>
-          <td class="num">${money(r.fees)}</td>
-          <td class="num">${money(r.totalCosts)}</td>
-          <td class="num">${money(r.breakeven)}</td>
-          <td class="num">${money(r.maxAds)}</td>
+          <td class="num ${r.missing?'':' '+(r.profit<0?'neg':'')}"><span class="${r.missing?'':r.profit>=0?'pos':'neg'}">${r.missing?"Set fee rates":money(r.profit,currency)}</span></td>
+          <td class="num">${r.missing?"—":pct(r.margin)}</td>
+          <td class="num">${r.missing?"—":pct(r.roi)}</td>
+          <td class="num">${r.missing?"—":money(r.fees,currency)}</td>
+          <td class="num">${r.missing?"—":money(r.totalCosts,currency)}</td>
+          <td class="num">${r.missing?"—":money(r.breakeven,currency)}</td>
+          <td class="num">${r.missing?"—":money(r.maxAds,currency)}</td>
         </tr>`).join("")}
       </tbody>
     </table></div>
-    <div class="trust-panel"><span class="tp-icon">ⓘ</span><div><strong>Calculation Transparency.</strong> Calculations are based on the inputs you provide and the fee assumptions displayed above. Last Fee Data Review: ${FEE_DATA.lastReviewed}. Source: Official marketplace documentation. Fees vary by category and plan — verify current rates before making decisions.</div></div>`;
+    <div class="trust-panel"><span class="tp-icon">ⓘ</span><div><strong>Calculation Transparency.</strong> US presets use our centralized rate card (last reviewed ${FEE_DATA.lastReviewed}). For other countries, enter the current combined marketplace/payment fee percentage and flat fee from official documents. Amounts use the selected currency without conversion; rates vary by category and plan.</div></div>`;
 }
 
 /* ================= GUIDES DATA ================= */
@@ -622,12 +720,12 @@ const GUIDES = [
 ];
 
 const FAQS = [
-  {q:"How accurate are SellerMargin calculations?", a:"Calculations are mathematically exact based on the inputs you provide and the fee rates in our centralized fee database (last reviewed "+FEE_DATA.lastReviewed+"). Marketplace fees change over time and vary by category, so always verify current rates on official marketplace documentation."},
-  {q:"Which marketplaces are supported?", a:"We currently support Amazon, eBay, Shopify, Etsy and Walmart Marketplace, with TikTok Shop support planned. Each marketplace calculator uses fee structures appropriate for US sellers, with UK, CA and AU support on the roadmap."},
+  {q:"How accurate are SellerMargin calculations?", a:"The math is based on your inputs and selected fee settings. US presets come from our centralized fee data (last reviewed "+FEE_DATA.lastReviewed+"); rates for other countries are entered by you. Marketplace fees vary by category and change over time, so always verify current rates on official marketplace documentation."},
+  {q:"Which marketplaces are supported?", a:"We currently support Amazon, eBay, Shopify, Etsy and Walmart Marketplace. Marketplace comparison and the Amazon/eBay profit calculators include country selectors: US fee presets are provided, and official fee rates for other countries can be entered manually."},
   {q:"What's the difference between profit margin and markup?", a:"Margin is profit as a percentage of the selling price; markup is profit as a percentage of cost. A 25% margin equals a 33.3% markup. Our calculators show both so you never confuse them."},
   {q:"What is break-even ROAS?", a:"Break-even ROAS is the return on ad spend at which advertising neither makes nor loses money. It's calculated as 1 ÷ your pre-ad profit margin. Above it, ads are profitable; below it, they lose money on every sale."},
   {q:"Is SellerMargin free to use?", a:"Yes — all core calculators are free. Professional and Business plans add saved scenarios, bulk comparisons, fee-change alerts and team features."},
-  {q:"Where does your fee data come from?", a:"From official marketplace pricing documentation (see our Fee Data page for sources and review dates). We never claim real-time accuracy — fee data is reviewed and updated regularly."},
+  {q:"Where does your fee data come from?", a:"US presets reference official marketplace pricing documentation (see our Fee Data page for sources and review dates). For other countries, enter the current rate from the applicable official fee schedule. Rates are not live, so verify them before making decisions."},
   {q:"Do you store my calculation inputs?", a:"No. Calculations run entirely in your browser. Nothing you enter is sent to a server. Saved scenarios (Pro plan) are stored in your private account only."},
   {q:"Can I use SellerMargin on mobile?", a:"Absolutely. The entire platform is mobile-first, designed for one-handed use with large inputs and instantly visible results."}
 ];
@@ -739,7 +837,7 @@ function pageCalculators(){
 }
 function pageTool(slug){
   const t = TOOLS[slug]; if(!t) return page404();
-  const extra = t.feeKey ? `<div class="trust-panel"><span class="tp-icon">ⓘ</span><div><strong>Calculation Transparency.</strong> Fees use our centralized rate card (last reviewed ${FEE_DATA.lastReviewed}): ${FEE_DATA.marketplaces[t.feeKey].categories[0]}. Source: <a href="${FEE_DATA.sources[t.feeKey]}" target="_blank" style="color:var(--accent)">official marketplace documentation</a>.</div></div>` : "";
+  const extra = t.feeKey ? `<div class="trust-panel"><span class="tp-icon">ⓘ</span><div><strong>Calculation Transparency.</strong> The selected country, currency and fee settings above are used. US starts with the centralized preset (last reviewed ${FEE_DATA.lastReviewed}); enter the current official rate for other countries. Fees vary by category and plan. <a href="${FEE_DATA.sources[t.feeKey]}" target="_blank" style="color:var(--accent)">Verify the official fee schedule</a>.</div></div>` : "";
   const content = toolContent[slug] || "";
   return `<section><div class="container">
     <div class="breadcrumb"><a href="#/">Home</a> / <a href="#/calculators">Calculators</a> / <span>${t.title}</span></div>
@@ -785,7 +883,8 @@ function toggleFaq(btn){
 }
 
 function pageCompare(){
-  const fields=[["cost","Product Cost","$"],["price","Selling Price","$"],["shipping","Shipping Cost","$"],["packaging","Packaging","$"],["ads","Advertising Cost","$"],["returns","Returns Allowance","$"],["other","Other Expenses","$"]];
+  const fields=[["cost","Product Cost"],["price","Selling Price"],["shipping","Shipping Cost"],["packaging","Packaging"],["ads","Advertising Cost"],["returns","Returns Allowance"],["other","Other Expenses"]];
+  const initialRates=countryDefaultRates(currentCompareCountry);
   return `<section><div class="container">
     <div class="breadcrumb"><a href="#/">Home</a> / <span>Marketplace Comparison</span></div>
     <div class="section-head" style="margin-bottom:36px">
@@ -794,21 +893,46 @@ function pageCompare(){
       <p>Enter your numbers once. Compare estimated profitability across every major marketplace. We show the numbers — you make the call.</p></div>
     <div class="calc-card" style="max-width:760px;margin:0 auto 32px">
       <div class="cc-head"><h3>Your Product</h3><span class="badge-live">Live Comparison</span></div>
-      ${fields.map(f=>`<div class="field"><label>${f[1]}</label><div class="input-wrap"><span class="prefix">${f[2]}</span><input type="number" id="cmp-${f[0]}" inputmode="decimal" placeholder="0.00" value="${{cost:"18",price:"49.99",shipping:"5",packaging:"1",ads:"4",returns:"2",other:"0.5"}[f[0]]||""}" oninput="updateCompare()"></div></div>`).join("")}
+      <div class="field"><label for="cmpCountry">Country / marketplace region</label><select id="cmpCountry" onchange="changeCompareCountry(this.value)">${countrySelectOptions(currentCompareCountry)}</select></div>
+      <div class="field"><label for="cmpCurrency">Currency for all amounts (no conversion)</label><select id="cmpCurrency" onchange="changeCompareCurrency(this.value)">${currencySelectOptions(currentCompareCurrency)}</select></div>
+      ${fields.map(f=>`<div class="field"><label>${f[1]}</label><div class="input-wrap"><span class="prefix cmp-currency-prefix">${currentCompareCurrency||"—"}</span><input type="number" id="cmp-${f[0]}" inputmode="decimal" placeholder="0.00" value="${{cost:"18",price:"49.99",shipping:"5",packaging:"1",ads:"4",returns:"2",other:"0.5"}[f[0]]||""}" oninput="updateCompare()"></div></div>`).join("")}
+      <label style="font-size:.82rem;font-weight:600;color:var(--muted)">Marketplace fee rates</label>
+      <p class="country-note">US rates are prefilled. For other countries, enter the total percentage and flat fee from each marketplace's official fee schedule. Blank rates won't be estimated.</p>
+      <div class="country-fees" id="cmpFeeRates">${Object.entries(FEE_DATA.marketplaces).map(([key,m])=>{
+        const rate=initialRates[key];
+        return `<div class="country-rate"><strong>${m.name}</strong><label for="cmpRatePct-${key}">Total fee rate (%)</label><input type="number" id="cmpRatePct-${key}" min="0" max="100" step="any" placeholder="e.g. 13.5" value="${rate?rate.feePct:""}" oninput="updateCompare()"><label for="cmpRateFixed-${key}">Flat fee per order (${currentCompareCurrency||"—"})</label><input type="number" id="cmpRateFixed-${key}" min="0" step="any" placeholder="e.g. 0.30" value="${rate?rate.fixedFee:""}" oninput="updateCompare()"></div>`;
+      }).join("")}</div>
       <label style="font-size:.82rem;font-weight:600;color:var(--muted)">Select marketplaces to compare</label>
       <div class="mk-select" id="cmpChips">${Object.entries(FEE_DATA.marketplaces).map(([k,m],i)=>`<button class="mk-chip ${i<5?"active":""}" data-k="${k}" onclick="toggleChip(this)">${m.name}</button>`).join("")}</div>
     </div>
     <div id="cmpResults" style="max-width:960px;margin:0 auto"></div>
     <div class="content-block" style="margin:48px auto 0">
       <h2>How the comparison works</h2>
-      <p>Each marketplace applies its own fee structure to your selling price: referral/transaction fees (percentage plus any fixed per-order fee) and payment processing fees. We subtract those fees plus all your entered costs from the selling price to estimate net profit, margin, ROI and break-even price.</p>
-      <div class="formula">Net Profit = Price − Product Cost − Shipping − Packaging − Ads − Returns − Other − Marketplace Fees − Payment Fees</div>
+      <p>For each marketplace, use the country-specific combined fee percentage and flat per-order fee from its official fee schedule. We subtract those fees and your entered costs to estimate net profit, margin, ROI and break-even price.</p>
+      <div class="formula">Net Profit = Price − Product Cost − Shipping − Packaging − Ads − Returns − Other − (Price × Fee Rate + Flat Fee)</div>
       <p>Maximum ad spend shows the total advertising budget per unit at which you'd still break even. No universal "best marketplace" exists — the right answer depends on your product, category fees, fulfillment costs and traffic strategy.</p>
     </div>
   </div></section>`;
 }
+function changeCompareCountry(code){
+  saveCountryRates(currentCompareCountry);
+  currentCompareCountry=code;
+  currentCompareCurrency=COUNTRY_CURRENCIES[code]||"";
+  document.getElementById("cmpCurrency").value=currentCompareCurrency;
+  document.querySelectorAll(".cmp-currency-prefix").forEach(el=>el.textContent=currentCompareCurrency||"—");
+  document.querySelectorAll(".country-rate label[for^='cmpRateFixed-']").forEach(el=>el.textContent=`Flat fee per order (${currentCompareCurrency||"—"})`);
+  loadCountryRates(code);
+  updateCompare();
+}
+function changeCompareCurrency(currency){
+  currentCompareCurrency=currency;
+  document.querySelectorAll(".cmp-currency-prefix").forEach(el=>el.textContent=currency||"—");
+  document.querySelectorAll(".country-rate label[for^='cmpRateFixed-']").forEach(el=>el.textContent=`Flat fee per order (${currency||"—"})`);
+  updateCompare();
+}
 function toggleChip(btn){ btn.classList.toggle("active"); updateCompare(); }
 function updateCompare(){
+  saveCountryRates();
   const sel=[...document.querySelectorAll("#cmpChips .mk-chip.active")].map(b=>b.dataset.k);
   renderComparison(document.getElementById("cmpResults"), sel.length?sel:["amazon"]);
 }
@@ -969,12 +1093,12 @@ function pageFeeData(){
     <div class="breadcrumb"><a href="#/">Home</a> / <span>Fee Data</span></div>
     <h1 style="margin-bottom:20px">Fee Data & Sources</h1>
     <div class="content-block">
-      <p>All marketplace fee rates used across SellerMargin come from the centralized table below — reviewed and updated by our team. Last full review: <strong>${FEE_DATA.lastReviewed}</strong>.</p>
+      <p>The US marketplace fee presets used across SellerMargin come from the centralized table below. The comparison calculator also lets you enter official country-specific rates for other regions. Last full review of the US presets: <strong>${FEE_DATA.lastReviewed}</strong>.</p>
       <div class="table-wrap"><table style="min-width:0">
         <thead><tr><th>Marketplace</th><th>Fee Structure (US, general)</th><th>Source</th></tr></thead>
         <tbody>${Object.entries(FEE_DATA.marketplaces).map(([k,m])=>`<tr><td><strong>${m.name}</strong></td><td>${m.categories[0]}</td><td><a href="${FEE_DATA.sources[k]}" target="_blank" style="color:var(--accent)">Official docs ↗</a></td></tr>`).join("")}</tbody>
       </table></div>
-      <p style="margin-top:16px">Important: fees vary by category, plan tier, seller status and country. The figures above are general reference rates for US sellers. We never claim real-time accuracy. Always confirm current rates on official marketplace pricing pages before making decisions.</p>
+      <p style="margin-top:16px">Important: fees vary by category, plan tier, seller status and country. The figures above are general reference rates for US sellers; for other countries, enter the current rate from the marketplace's official fee schedule in the relevant calculator. We never claim real-time accuracy. Always confirm current rates before making decisions.</p>
     </div></div></div></section>`;
 }
 function legalPage(title, body){
