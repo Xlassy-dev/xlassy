@@ -436,6 +436,7 @@ function countrySelectOptions(selected="US"){ return COUNTRY_OPTIONS.map(c=>`<op
 function currencySelectOptions(selected="USD"){ return `<option value="">Select currency</option>${CURRENCY_CODES.map(c=>`<option value="${c}"${c===selected?" selected":""}>${c}</option>`).join("")}`; }
 function countryDefaultRates(code){
   if(COUNTRY_FEE_RATES[code]) return COUNTRY_FEE_RATES[code];
+  if(code==="GB") return {ebay:{feePct:12.8,fixedFee:0.30}};
   if(code!=="US") return {};
   return Object.fromEntries(Object.entries(FEE_DATA.marketplaces).map(([key,f])=>[key,{feePct:(f.referralPct+f.paymentPct)*100,fixedFee:f.fixedFee+f.paymentFixed}]));
 }
@@ -511,14 +512,16 @@ function buildCalculator(el, cfg){
   el.innerHTML = `
     <div class="calc-card">
       <div class="cc-head"><h3>${cfg.title}</h3><span class="badge-live">Live</span></div>
-    ${cfg.feeKey?feeToolControls(cfg):""}
+    ${cfg.feeKey&&!cfg.ebayUK?feeToolControls(cfg):""}
       ${cfg.fields.map(f=>`
         <div class="field" id="fld-${f.id}">
           <label>${f.label} ${f.tip?`<span class="tip" title="${f.tip}">?</span>`:""}</label>
-        <div class="input-wrap">${f.prefix?`<span class="prefix ${cfg.feeKey?"calc-currency-prefix":""}">${f.prefix}</span>`:""}
-            <input type="number" id="in-${f.id}" inputmode="decimal" placeholder="${f.placeholder||"0.00"}" min="0" step="any">
-            ${f.suffix?`<span class="suffix">${f.suffix}</span>`:""}
-          </div>
+        ${f.type==="select"
+          ? `<select id="in-${f.id}">${(f.options||[]).map(o=>`<option value="${typeof o==="string"?o:o.value}"${f.default===o?" selected":""}>${typeof o==="string"?o:o.label}</option>`).join("")}</select>`
+          : `<div class="input-wrap">${f.prefix?`<span class="prefix ${cfg.feeKey?"calc-currency-prefix":""}">${f.prefix}</span>`:""}
+              <input type="number" id="in-${f.id}" inputmode="decimal" placeholder="${f.placeholder||"0.00"}" min="0" step="any">
+              ${f.suffix?`<span class="suffix">${f.suffix}</span>`:""}
+            </div>`}
           <div class="err-msg">Please enter a valid non-negative number.</div>
         </div>`).join("")}
       <div id="res-${cfg.id}"></div>
@@ -542,6 +545,11 @@ function runCalc(id, silent){
   cfg.fields.forEach(f=>{
     const inp=document.getElementById("in-"+f.id); const raw=inp.value.trim();
     const fld=document.getElementById("fld-"+f.id);
+    if(f.type==="select"){
+      vals[f.id]=raw;
+      fld.classList.remove("error");
+      return;
+    }
     if(raw===""){ vals[f.id]=0; fld.classList.remove("error"); return; }
     const v=parseFloat(raw); anyValue=true;
     if(isNaN(v)||v<0){ fld.classList.add("error"); hasError=true; } else { vals[f.id]=v; fld.classList.remove("error"); }
@@ -549,7 +557,7 @@ function runCalc(id, silent){
   const resEl=document.getElementById("res-"+id);
   if(hasError){ if(!silent) toast("Please fix the highlighted fields."); return; }
   if(!anyValue){ resEl.innerHTML=emptyState(); return; }
-  if(cfg.feeKey){
+  if(cfg.feeKey&&!cfg.ebayUK){
     const feePct=document.getElementById("toolRatePct-"+id).value.trim();
     const fixedFee=document.getElementById("toolRateFixed-"+id).value.trim();
     const currency=document.getElementById("toolCurrency-"+id).value;
@@ -632,18 +640,78 @@ const TOOLS = {
     const price=v.margin>=100?NaN:v.cost/(1-v.margin/100), profit=price-v.cost;
     return [{label:"Required Selling Price",value:money(price),main:true},{label:"Gross Profit",value:money(profit)},{label:"Markup on Cost",value:pct(v.cost>0?profit/v.cost*100:NaN)}];
   }},
-  "ebay-profit-calculator": { cat:"eBay", title:"eBay Profit Calculator", desc:"Calculate your estimated eBay profit after product cost, shipping, eBay fees and advertising.", fields:[
-    {id:"cost",label:"Product Cost",prefix:"$"},
-    {id:"price",label:"Selling Price",prefix:"$"},
-    {id:"shipping",label:"Shipping Cost",prefix:"$"},
-    {id:"ads",label:"Advertising Cost",prefix:"$",tip:"Promoted listings % or per-unit ad cost."},
-    {id:"other",label:"Other Expenses",prefix:"$"}
-  ], feeKey:"ebay", compute:v=>{
-    const referral=v.price*v.feePct/100;
-    const fees=referral+v.feeFixed+v.ads+v.other;
-    const profit=v.price-v.cost-v.shipping-fees;
+  "ebay-profit-calculator": { cat:"eBay", title:"UK eBay Profit Calculator", desc:"Calculate UK eBay profit after item cost, shipping, category fees, VAT, promoted listings and charity donations.", ebayUK:true, feeKey:"ebay", fields:[
+    {id:"price",label:"Sold Price",prefix:"£",tip:"Amount charged to the buyer, including VAT if applicable."},
+    {id:"shippingCharged",label:"Shipping Charged",prefix:"£"},
+    {id:"cost",label:"Item Cost",prefix:"£",tip:"Cost of the item, including VAT paid."},
+    {id:"shipping",label:"Shipping Cost",prefix:"£",tip:"Actual shipping cost, including VAT paid."},
+    {id:"orders",label:"No. of orders",placeholder:"1"},
+    {id:"sellerType",label:"Seller type",type:"select",options:["Private","Business"],default:"Private"},
+    {id:"sellerLevel",label:"Seller level",type:"select",options:["Top Rated","Above Standard","Below Standard"],default:"Above Standard"},
+    {id:"category",label:"Item Category",type:"select",options:[
+      "Everything else","Antiques","Art","Baby","Books, Comics & Magazines","Business, Office & Industrial","Cameras & Photography","Clothing, Shoes & Accessories","Coins","Collectables","Computers, Tablets & Networking","Crafts","Dolls & Bears","Films & TV","Event Tickets","Garden & Patio","Health & Beauty","Holidays & Travel","Home, Furniture & DIY","Jewellery & Watches","Memorials & Funerals","Mobile Phones & Communication","Music","Musical Instruments","Pet Supplies","Pottery, Porcelain & Glass","Sound & Vision","Sporting Goods","Sports Memorabilia","Stamps","Toys & Games","Vehicle Parts & Accessories","Video Games & Consoles","Wholesale & Job Lots"
+    ],default:"Everything else"},
+    {id:"subcategory",label:"Subcategory",type:"select",options:["Everything else","Trainers","NFT","Clothes","Men's Shoes","Women's Shoes","Camcorders","Digital Cameras","Film Photography","Lenses & Filters","Watches","Mobile Phones","Consoles","Laptops","Power Strips","Bath & Furniture","Garden","Toys & Games"],default:"Everything else"},
+    {id:"promo",label:"FVF promotion",type:"select",options:["No","80% off FVF","50% off FVF","Max £3 FVF","2% FVF"],default:"No"},
+    {id:"promoDiscount",label:"Custom FVF discount",suffix:"%",tip:"Used for a custom percentage discount promotion."},
+    {id:"adRate",label:"Promoted Ad Rate",suffix:"%"},
+    {id:"charity",label:"Donated to Charity",suffix:"%"},
+    {id:"overseas",label:"Overseas sale",type:"select",options:["No","Eurozone & Northern Europe","United States","Canada","All other countries"],default:"No"},
+    {id:"vatRegistered",label:"VAT Registered?",type:"select",options:["No","Yes"],default:"No"},
+    {id:"vat",label:"VAT Rate",suffix:"%",placeholder:"20"},
+    {id:"shippingVAT",label:"VAT on Shipping Cost?",type:"select",options:["No","Yes"],default:"Yes"},
+    {id:"salesTax",label:"International Sales Tax",suffix:"%",tip:"Any destination sales tax or import tax you need to account for."},
+    {id:"other",label:"Other Expenses",prefix:"£"}
+  ], compute:v=>{
+    const orders=Math.max(v.orders||1,1);
+    const sale=v.price*orders+v.shippingCharged*orders;
+    const itemCost=v.cost*orders;
+    const shippingCost=v.shipping*orders;
+    let variableFeePct;
+    if(v.sellerType==="Private"){
+      if(v.category==="Clothing, Shoes & Accessories"){
+        variableFeePct=v.subcategory==="Trainers"&&v.price<100?11.9:(v.subcategory==="Trainers"&&v.price>=100?5:12.8);
+      } else if(v.category==="Everything else"){
+        variableFeePct=v.price<=5000?12.8:3;
+      } else {
+        variableFeePct=12.8;
+      }
+    } else {
+      const categoryRates={
+        "Art":v.subcategory==="NFT"?5:10.9,"Cameras & Photography":v.price<=1000?6.9:3,
+        "Clothing, Shoes & Accessories":v.subcategory==="Trainers"?(v.price<100?11.9:5):10.9,
+        "Computers, Tablets & Networking":v.price<=1000?6.9:3,"Home, Furniture & DIY":v.price<=500?11.9:7.9,
+        "Jewellery & Watches":v.subcategory==="Watches"?(v.price<=1000?12.9:4):11.9,
+        "Mobile Phones & Communication":v.price<=400?8.9:9.9,"Toys & Games":v.price<=250?10.9:7.9,
+        "Vehicle Parts & Accessories":v.subcategory==="Tyres"?7.9:8.9,"Video Games & Consoles":v.subcategory==="Consoles"?6.9:8.9
+      };
+      variableFeePct=categoryRates[v.category]??(v.category==="Everything else"?10.9:11.9);
+    }
+    let variableFee=sale*variableFeePct/100;
+    if(v.sellerLevel==="Top Rated") variableFee*=0.9;
+    if(v.promo==="80% off FVF") variableFee*=0.2;
+    else if(v.promo==="50% off FVF") variableFee*=0.5;
+    else if(v.promo==="Max £3 FVF") variableFee=Math.min(variableFee,3);
+    else if(v.promo==="2% FVF"&&v.price>=30) variableFee=sale*0.02;
+    else if(v.promoDiscount>0) variableFee*=1-v.promoDiscount/100;
+    const fixedFee=v.sellerType==="Private"?(v.price<10&&v.category==="Everything else"?.10:.30):(v.price<10&&v.category==="Everything else"?0:.30);
+    const baseFees=(variableFee+fixedFee*orders);
+    let internationalPct=0;
+    if(v.overseas==="Eurozone & Northern Europe") internationalPct=v.sellerType==="Private"?3:.5;
+    else if(v.overseas==="United States"||v.overseas==="Canada") internationalPct=v.sellerType==="Private"?3:1.8;
+    else if(v.overseas==="All other countries") internationalPct=v.sellerType==="Private"?3:2;
+    const internationalFee=sale*internationalPct/100;
+    const currencyConversion=v.overseas==="No"?0:sale*0.025;
+    const promotedFee=sale*v.adRate/100;
+    const charityFee=sale*v.charity/100;
+    const salesTaxFee=sale*v.salesTax/100;
+    const vatRate=v.vat>0?v.vat:20;
+    const vatOnSale=v.sellerType==="Business"&&v.vatRegistered==="Yes"?sale*(vatRate/100)/(1+vatRate/100):0;
+    const vatOnFees=v.sellerType==="Business"&&v.vatRegistered==="Yes"?(baseFees+internationalFee)*vatRate/100:0;
+    const fees=baseFees+internationalFee+currencyConversion+promotedFee+charityFee+salesTaxFee+vatOnFees;
+    const profit=sale-itemCost-shippingCost-fees-vatOnSale;
     const margin=v.price>0?profit/v.price*100:NaN, roi=v.cost>0?profit/v.cost*100:NaN;
-    return [{label:"Net Profit",value:money(profit,v.currency),main:true,neg:profit<0},{label:"Profit Margin",value:pct(margin),neg:margin<0},{label:"ROI",value:pct(roi),neg:roi<0},{label:"eBay Fees",value:money(referral+v.feeFixed,v.currency)},{label:"Total Costs",value:money(v.cost+v.shipping+fees,v.currency)},{label:"Break-Even Price",value:money((v.cost+v.shipping+v.ads+v.other+v.feeFixed)/(1-v.feePct/100),v.currency)}];
+    return [{label:"Net Profit",value:money(profit,"GBP"),main:true,neg:profit<0},{label:"Profit Margin",value:pct(margin),neg:margin<0},{label:"ROI",value:pct(roi),neg:roi<0},{label:"Final Value Fee",value:money(baseFees,"GBP")},{label:"Promoted Listing Fee",value:money(promotedFee,"GBP")},{label:"Other Fees",value:money(internationalFee+currencyConversion+charityFee+salesTaxFee+vatOnFees,"GBP")},{label:"Total Costs",value:money(itemCost+shippingCost+fees,"GBP")},{label:"Break-Even Sold Price",value:money((itemCost+shippingCost+fees)/(orders*(1-variableFeePct/100)), "GBP")}];
   }},
   "amazon-fba-profit-calculator": { cat:"Amazon", title:"Amazon FBA Profit Calculator", desc:"Estimate your Amazon FBA profit after referral fees and fulfillment costs.", fields:[
     {id:"cost",label:"Product Cost",prefix:"$"},
