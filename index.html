@@ -707,6 +707,7 @@ const TOOLS = {
     {id:"shipping",label:"Shipping Cost",prefix:"£",tip:"Actual shipping cost, including VAT paid."},
     {id:"orders",label:"No. of orders",placeholder:"1"},
     {id:"sellerType",label:"Seller type",type:"select",options:["Private","Business"],default:"Private"},
+    {id:"ukResident",label:"Residing inside the UK?",type:"select",options:["Yes","No"],default:"Yes",tip:"UK-based private sellers currently pay no final value or regulatory operating fee on eligible sales."},
     {id:"sellerLevel",label:"Seller level",type:"select",options:["Top Rated","Above Standard","Below Standard"],default:"Above Standard"},
     {id:"category",label:"Item Category",type:"select",options:[
       "Everything else","Antiques","Art","Baby","Books, Comics & Magazines","Business, Office & Industrial","Cameras & Photography","Clothing, Shoes & Accessories","Coins","Collectables","Computers, Tablets & Networking","Crafts","Dolls & Bears","Films & TV","Event Tickets","Garden & Patio","Health & Beauty","Holidays & Travel","Home, Furniture & DIY","Jewellery & Watches","Memorials & Funerals","Mobile Phones & Communication","Music","Musical Instruments","Pet Supplies","Pottery, Porcelain & Glass","Sound & Vision","Sporting Goods","Sports Memorabilia","Stamps","Toys & Games","Vehicle Parts & Accessories","Video Games & Consoles","Wholesale & Job Lots"
@@ -728,8 +729,11 @@ const TOOLS = {
     const sale=v.price*orders+v.shippingCharged*orders;
     const itemCost=v.cost*orders;
     const shippingCost=v.shipping*orders;
+    const ukPrivateSeller=v.country==="GB"&&v.sellerType==="Private"&&v.ukResident==="Yes";
     let variableFeePct=countryRate.feePct;
-    if(v.country==="GB" && v.sellerType==="Private"){
+    if(ukPrivateSeller){
+      variableFeePct=0;
+    } else if(v.country==="GB" && v.sellerType==="Private"){
       if(v.category==="Clothing, Shoes & Accessories"){
         variableFeePct=v.subcategory==="Trainers"&&v.price<100?11.9:(v.subcategory==="Trainers"&&v.price>=100?5:12.8);
       } else if(v.category==="Everything else"){
@@ -755,7 +759,9 @@ const TOOLS = {
     else if(v.promo==="Max £3 FVF") variableFee=Math.min(variableFee,3);
     else if(v.promo==="2% FVF"&&v.price>=30) variableFee=sale*0.02;
     else if(v.promoDiscount>0) variableFee*=1-v.promoDiscount/100;
-    const fixedFee=v.country==="GB"&&v.sellerType==="Private"
+    const fixedFee=ukPrivateSeller
+      ?0
+      :v.country==="GB"&&v.sellerType==="Private"
       ?(v.price<10&&v.category==="Everything else"?0.10:countryRate.fixedFee)
       :(v.country==="GB"&&v.sellerType==="Business"&&v.price<10&&v.category==="Everything else"?0:countryRate.fixedFee);
     const baseFees=(variableFee+fixedFee*orders);
@@ -1298,6 +1304,7 @@ const toolContent = {
     <p>Ad spend is a per-unit cost. A product with a healthy 35% margin can drop below 10% after paid traffic. Use our ROAS and break-even ROAS calculators to see exactly where ads stop paying for themselves.</p>`,
   "ebay-profit-calculator": `<h2>What is an eBay profit calculator?</h2>
     <p>This worldwide eBay profit calculator estimates what you keep after item cost, shipping, the selected country's final value fee, promoted listings, taxes and charity donations. Select an eBay country to apply its currency and fee preset automatically.</p>
+    <p>For UK-based private sellers, the calculator applies eBay's current £0 final value and regulatory operating fees on eligible sales. Overseas delivery may still incur an international fee. <a href="https://www.ebay.co.uk/help/selling/fees-credits-invoices/selling-fees?id=4822" target="_blank" rel="noopener noreferrer">Check eBay's UK private seller fees</a>.</p>
     <h2>eBay profit formula</h2>
     <div class="formula">Net Profit = Sale Amount − Item Cost − Shipping − Final Value Fee − Other Fees</div>
     <p>Rates are prefilled for supported countries and should be verified against eBay's current country/category fee schedule. Some categories, seller levels and promotions use different rates.</p>
