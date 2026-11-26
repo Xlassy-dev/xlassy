@@ -438,6 +438,25 @@ const COUNTRY_NAMES = typeof Intl.DisplayNames==="function" ? new Intl.DisplayNa
 const COUNTRY_OPTIONS = COUNTRY_CODES.map(code=>({code,name:COUNTRY_NAMES?COUNTRY_NAMES.of(code):code})).sort((a,b)=>a.name.localeCompare(b.name));
 const CURRENCY_CODES = typeof Intl.supportedValuesOf==="function" ? Intl.supportedValuesOf("currency") : ["AUD","CAD","CHF","CNY","EUR","GBP","INR","JPY","NZD","USD"];
 const COUNTRY_CURRENCIES = {US:"USD",GB:"GBP",CA:"CAD",AU:"AUD",NZ:"NZD",IN:"INR",JP:"JPY",CN:"CNY",CH:"CHF",DE:"EUR",FR:"EUR",IT:"EUR",ES:"EUR",NL:"EUR",BE:"EUR",IE:"EUR",AT:"EUR",PT:"EUR",GR:"EUR",FI:"EUR",BR:"BRL",MX:"MXN",SG:"SGD",HK:"HKD",KR:"KRW",ZA:"ZAR",AE:"AED",SA:"SAR",SE:"SEK",NO:"NOK",DK:"DKK",PL:"PLN",TR:"TRY",ID:"IDR",MY:"MYR",TH:"THB",PH:"PHP",VN:"VND"};
+const EBAY_COUNTRY_RATES = {
+  US:{feePct:13.25,fixedFee:0.30,currency:"USD"},
+  GB:{feePct:12.8,fixedFee:0.30,currency:"GBP"},
+  AU:{feePct:12.8,fixedFee:0.30,currency:"AUD"},
+  CA:{feePct:13.6,fixedFee:0.30,currency:"CAD"},
+  DE:{feePct:11.9,fixedFee:0.35,currency:"EUR"},
+  FR:{feePct:11.7,fixedFee:0.35,currency:"EUR"},
+  IT:{feePct:11.7,fixedFee:0.35,currency:"EUR"},
+  ES:{feePct:11.7,fixedFee:0.35,currency:"EUR"},
+  NL:{feePct:11.7,fixedFee:0.35,currency:"EUR"},
+  BE:{feePct:11.7,fixedFee:0.35,currency:"EUR"},
+  IE:{feePct:11.7,fixedFee:0.35,currency:"EUR"},
+  AT:{feePct:11.7,fixedFee:0.35,currency:"EUR"},
+  CH:{feePct:11.7,fixedFee:0.35,currency:"CHF"},
+  NZ:{feePct:12.9,fixedFee:0.30,currency:"NZD"},
+  HK:{feePct:12.8,fixedFee:0.30,currency:"HKD"},
+  SG:{feePct:12.8,fixedFee:0.30,currency:"SGD"},
+  IN:{feePct:12.8,fixedFee:30,currency:"INR"}
+};
 const COUNTRY_FEE_RATES = {};
 let currentCompareCountry="US", currentCompareCurrency="USD";
 function countrySelectOptions(selected="US"){ return COUNTRY_OPTIONS.map(c=>`<option value="${c.code}"${c.code===selected?" selected":""}>${c.name}</option>`).join(""); }
@@ -515,6 +534,21 @@ function updateFeeToolRate(id,key){
 /* ================= CALCULATOR ENGINE (generic, reusable) ================= */
 function money(v,currency="USD"){ if(!isFinite(v)) return "—"; return new Intl.NumberFormat("en-US",{style:"currency",currency,minimumFractionDigits:2,maximumFractionDigits:2}).format(v); }
 function pct(v){ if(!isFinite(v)) return "—"; return v.toFixed(1)+"%"; }
+function ebayCountryRate(code){
+  return EBAY_COUNTRY_RATES[code]||{feePct:12.8,fixedFee:0.30,currency:COUNTRY_CURRENCIES[code]||"USD"};
+}
+function currencySymbol(currency){
+  const parts=new Intl.NumberFormat("en-US",{style:"currency",currency,currencyDisplay:"narrowSymbol"}).formatToParts(0);
+  return parts.find(p=>p.type==="currency")?.value||currency;
+}
+function changeEbayCountry(id){
+  const country=document.getElementById("in-country")?.value;
+  if(!country) return;
+  const rate=ebayCountryRate(country);
+  const root=document.getElementById("toolCalc");
+  if(root) root.querySelectorAll(".ebay-currency-prefix").forEach(el=>el.textContent=currencySymbol(rate.currency));
+  runCalc(id,true);
+}
 
 function buildCalculator(el, cfg){
   el.innerHTML = `
@@ -526,8 +560,8 @@ function buildCalculator(el, cfg){
         <div class="field" id="fld-${f.id}">
           <label>${f.label} ${f.tip?`<span class="tip" title="${f.tip}">?</span>`:""}</label>
         ${f.type==="select"
-          ? `<select id="in-${f.id}">${(f.options||[]).map(o=>`<option value="${typeof o==="string"?o:o.value}"${f.default===o?" selected":""}>${typeof o==="string"?o:o.label}</option>`).join("")}</select>`
-          : `<div class="input-wrap">${f.prefix?`<span class="prefix ${cfg.feeKey?"calc-currency-prefix":""}">${f.prefix}</span>`:""}
+          ? `<select id="in-${f.id}"${cfg.ebayUK&&f.id==="country"?` onchange="changeEbayCountry('${cfg.id}')"`:""}>${(f.options||[]).map(o=>`<option value="${typeof o==="string"?o:o.value}"${(typeof o==="string"?f.default===o:f.default===o.value)?" selected":""}>${typeof o==="string"?o:o.label}</option>`).join("")}</select>`
+          : `<div class="input-wrap">${f.prefix?`<span class="prefix ${cfg.feeKey?"calc-currency-prefix":""} ${cfg.ebayUK?"ebay-currency-prefix":""}">${cfg.ebayUK&&f.prefix?currencySymbol("GBP"):f.prefix}</span>`:""}
               <input type="number" id="in-${f.id}" inputmode="decimal" placeholder="${f.placeholder||"0.00"}" min="0" step="any">
               ${f.suffix?`<span class="suffix">${f.suffix}</span>`:""}
             </div>`}
@@ -544,6 +578,16 @@ function buildCalculator(el, cfg){
   window.__calcs = window.__calcs || {};
   window.__calcs[cfg.id] = cfg;
   if(cfg.feeKey) setFeeToolCurrency(cfg.id,"USD");
+  if(cfg.ebayUK){
+    cfg.fields.forEach(f=>{
+      const inp=document.getElementById("in-"+f.id);
+      inp.addEventListener("input",()=>runCalc(cfg.id,true));
+      inp.addEventListener("change",()=>runCalc(cfg.id,true));
+    });
+    const initialCountry=document.getElementById("in-country")?.value||"GB";
+    const initialRate=ebayCountryRate(initialCountry);
+    el.querySelectorAll(".ebay-currency-prefix").forEach(span=>span.textContent=currencySymbol(initialRate.currency));
+  }
   if(cfg.instant){
     cfg.fields.forEach(f=> el.querySelector("#in-"+f.id).addEventListener("input",()=>runCalc(cfg.id,true)));
     el.querySelector(`#res-${cfg.id}`).innerHTML = emptyState();
@@ -655,7 +699,8 @@ const TOOLS = {
     const price=v.margin>=100?NaN:v.cost/(1-v.margin/100), profit=price-v.cost;
     return [{label:"Required Selling Price",value:money(price),main:true},{label:"Gross Profit",value:money(profit)},{label:"Markup on Cost",value:pct(v.cost>0?profit/v.cost*100:NaN)}];
   }},
-  "ebay-profit-calculator": { cat:"eBay", title:"UK eBay Profit Calculator", desc:"Calculate UK eBay profit after item cost, shipping, category fees, VAT, promoted listings and charity donations.", ebayUK:true, feeKey:"ebay", fields:[
+  "ebay-profit-calculator": { cat:"eBay", title:"Worldwide eBay Profit Calculator", desc:"Select a country and calculate eBay profit after item cost, shipping, category fees, VAT, promoted listings and charity donations.", ebayUK:true, feeKey:"ebay", fields:[
+    {id:"country",label:"Country / eBay region",type:"select",options:COUNTRY_OPTIONS.map(c=>({value:c.code,label:c.name})),default:"GB"},
     {id:"price",label:"Sold Price",prefix:"£",tip:"Amount charged to the buyer, including VAT if applicable."},
     {id:"shippingCharged",label:"Shipping Charged",prefix:"£"},
     {id:"cost",label:"Item Cost",prefix:"£",tip:"Cost of the item, including VAT paid."},
@@ -678,12 +723,13 @@ const TOOLS = {
     {id:"salesTax",label:"International Sales Tax",suffix:"%",tip:"Any destination sales tax or import tax you need to account for."},
     {id:"other",label:"Other Expenses",prefix:"£"}
   ], compute:v=>{
+    const countryRate=ebayCountryRate(v.country||"GB");
     const orders=Math.max(v.orders||1,1);
     const sale=v.price*orders+v.shippingCharged*orders;
     const itemCost=v.cost*orders;
     const shippingCost=v.shipping*orders;
-    let variableFeePct;
-    if(v.sellerType==="Private"){
+    let variableFeePct=countryRate.feePct;
+    if(v.country==="GB" && v.sellerType==="Private"){
       if(v.category==="Clothing, Shoes & Accessories"){
         variableFeePct=v.subcategory==="Trainers"&&v.price<100?11.9:(v.subcategory==="Trainers"&&v.price>=100?5:12.8);
       } else if(v.category==="Everything else"){
@@ -691,7 +737,7 @@ const TOOLS = {
       } else {
         variableFeePct=12.8;
       }
-    } else {
+    } else if(v.country==="GB") {
       const categoryRates={
         "Art":v.subcategory==="NFT"?5:10.9,"Cameras & Photography":v.price<=1000?6.9:3,
         "Clothing, Shoes & Accessories":v.subcategory==="Trainers"?(v.price<100?11.9:5):10.9,
@@ -709,7 +755,9 @@ const TOOLS = {
     else if(v.promo==="Max £3 FVF") variableFee=Math.min(variableFee,3);
     else if(v.promo==="2% FVF"&&v.price>=30) variableFee=sale*0.02;
     else if(v.promoDiscount>0) variableFee*=1-v.promoDiscount/100;
-    const fixedFee=v.sellerType==="Private"?(v.price<10&&v.category==="Everything else"?.10:.30):(v.price<10&&v.category==="Everything else"?0:.30);
+    const fixedFee=v.country==="GB"&&v.sellerType==="Private"
+      ?(v.price<10&&v.category==="Everything else"?0.10:countryRate.fixedFee)
+      :(v.country==="GB"&&v.sellerType==="Business"&&v.price<10&&v.category==="Everything else"?0:countryRate.fixedFee);
     const baseFees=(variableFee+fixedFee*orders);
     let internationalPct=0;
     if(v.overseas==="Eurozone & Northern Europe") internationalPct=v.sellerType==="Private"?3:.5;
@@ -726,7 +774,7 @@ const TOOLS = {
     const fees=baseFees+internationalFee+currencyConversion+promotedFee+charityFee+salesTaxFee+vatOnFees;
     const profit=sale-itemCost-shippingCost-fees-vatOnSale;
     const margin=v.price>0?profit/v.price*100:NaN, roi=v.cost>0?profit/v.cost*100:NaN;
-    return [{label:"Net Profit",value:money(profit,"GBP"),main:true,neg:profit<0},{label:"Profit Margin",value:pct(margin),neg:margin<0},{label:"ROI",value:pct(roi),neg:roi<0},{label:"Final Value Fee",value:money(baseFees,"GBP")},{label:"Promoted Listing Fee",value:money(promotedFee,"GBP")},{label:"Other Fees",value:money(internationalFee+currencyConversion+charityFee+salesTaxFee+vatOnFees,"GBP")},{label:"Total Costs",value:money(itemCost+shippingCost+fees,"GBP")},{label:"Break-Even Sold Price",value:money((itemCost+shippingCost+fees)/(orders*(1-variableFeePct/100)), "GBP")}];
+    return [{label:"Net Profit",value:money(profit,countryRate.currency),main:true,neg:profit<0},{label:"Profit Margin",value:pct(margin),neg:margin<0},{label:"ROI",value:pct(roi),neg:roi<0},{label:"Final Value Fee",value:money(baseFees,countryRate.currency)},{label:"Promoted Listing Fee",value:money(promotedFee,countryRate.currency)},{label:"Other Fees",value:money(internationalFee+currencyConversion+charityFee+salesTaxFee+vatOnFees,countryRate.currency)},{label:"Total Costs",value:money(itemCost+shippingCost+fees,countryRate.currency)},{label:"Break-Even Sold Price",value:money((itemCost+shippingCost+fees)/(orders*(1-variableFeePct/100)),countryRate.currency)}];
   }},
   "amazon-fba-profit-calculator": { cat:"Amazon", title:"Amazon FBA Profit Calculator", desc:"Estimate your Amazon FBA profit after referral fees and fulfillment costs.", fields:[
     {id:"cost",label:"Product Cost",prefix:"$"},
@@ -1249,10 +1297,10 @@ const toolContent = {
     <h2>How advertising changes profit</h2>
     <p>Ad spend is a per-unit cost. A product with a healthy 35% margin can drop below 10% after paid traffic. Use our ROAS and break-even ROAS calculators to see exactly where ads stop paying for themselves.</p>`,
   "ebay-profit-calculator": `<h2>What is an eBay profit calculator?</h2>
-    <p>An eBay profit calculator estimates what you keep from an eBay sale after product cost, shipping, eBay's final value fee and your advertising costs. eBay's fee structure combines a percentage fee with a fixed per-order fee, which this calculator handles automatically.</p>
+    <p>This worldwide eBay profit calculator estimates what you keep after item cost, shipping, the selected country's final value fee, promoted listings, taxes and charity donations. Select an eBay country to apply its currency and fee preset automatically.</p>
     <h2>eBay profit formula</h2>
-    <div class="formula">Net Profit = Price − Cost − Shipping − (Price × 13.25% + $0.30) − Ads − Other</div>
-    <p>The 13.25% final value fee applies to most categories for US sellers, plus a $0.30 per-order fee. Categories like sneakers or watches differ — always check eBay's official fee page for your category.</p>
+    <div class="formula">Net Profit = Sale Amount − Item Cost − Shipping − Final Value Fee − Other Fees</div>
+    <p>Rates are prefilled for supported countries and should be verified against eBay's current country/category fee schedule. Some categories, seller levels and promotions use different rates.</p>
     <h2>Example calculation</h2>
     <p>Selling an item for $49.99 that costs you $18.00, with $5.00 shipping and $3.00 in promoted-listing costs: eBay fees are $49.99 × 13.25% + $0.30 = $6.92. Net profit = $49.99 − $18 − $5 − $6.92 − $3 = $17.07 (34.1% margin).</p>
     <h2>How advertising changes profit on eBay</h2>
