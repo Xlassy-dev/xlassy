@@ -43,21 +43,22 @@ p{color:var(--muted)}
 .btn-gold{background:linear-gradient(135deg,#C9A227,#B8911F);color:#fff}
 .btn-gold:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
 /* NAV */
-header{position:sticky;top:0;z-index:100;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);transition:background .25s,border-color .25s,box-shadow .25s}
+header{position:sticky;top:0;z-index:100;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);transition:background .25s,border-color .25s,box-shadow .25s;perspective:1200px;transform-style:preserve-3d;animation:navEnter .7s cubic-bezier(.2,.8,.2,1)}
 header.scrolled{background:color-mix(in srgb,var(--bg) 94%,transparent);box-shadow:0 10px 30px rgba(17,24,39,.08)}
 [data-theme="dark"] header.scrolled{box-shadow:0 10px 30px rgba(0,0,0,.24)}
-.nav{display:flex;align-items:center;gap:8px;height:68px}
-.logo{font-weight:800;font-size:1.25rem;letter-spacing:-.02em;text-decoration:none;color:var(--text);display:flex;align-items:center;gap:9px;margin-right:14px}
+.nav{display:flex;align-items:center;gap:8px;height:68px;transform-style:preserve-3d;transform-origin:center top;transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.logo{font-weight:800;font-size:1.25rem;letter-spacing:-.02em;text-decoration:none;color:var(--text);display:flex;align-items:center;gap:9px;margin-right:14px;white-space:nowrap;flex-shrink:0;transform-style:preserve-3d}
 .logo-mark{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#C9A227,#7A6114);display:grid;place-items:center;color:#fff;font-size:.85rem;font-weight:800;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.2,.8,.2,1),box-shadow .25s}
 .logo:hover .logo-mark{transform:perspective(220px) rotateX(12deg) rotateY(-18deg) rotateZ(-6deg) scale(1.08);box-shadow:0 8px 18px rgba(201,162,39,.3)}
-.nav-links{display:flex;gap:4px;flex:1}
-.nav-links a{text-decoration:none;color:var(--muted);font-size:.9rem;font-weight:500;padding:8px 12px;border-radius:8px;transition:color .2s,background .2s}
+.nav-links{display:flex;gap:4px;flex:1;min-width:0;align-items:center;transform-style:preserve-3d}
+.nav-links a{text-decoration:none;color:var(--muted);font-size:.9rem;font-weight:500;padding:8px 12px;border-radius:8px;transition:color .2s,background .2s,transform .25s,box-shadow .25s;white-space:nowrap;transform-style:preserve-3d}
+.nav-links #mkWrap{position:relative;flex-shrink:0}
 .nav-links a:hover{color:var(--text);background:color-mix(in srgb,var(--text) 5%,transparent)}
 .nav-links>a,#mkWrap>a{position:relative}
 .nav-links>a::after,#mkWrap>a::after{content:"";position:absolute;left:12px;right:12px;bottom:3px;height:2px;border-radius:2px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .22s ease}
 .nav-links>a:hover::after,#mkWrap>a:hover::after,.nav-links>a.active::after,#mkWrap>a.active::after{transform:scaleX(1)}
 .nav-links>a.active,#mkWrap>a.active{color:var(--text);background:color-mix(in srgb,var(--accent) 8%,transparent)}
-.nav-right{display:flex;align-items:center;gap:8px}
+.nav-right{display:flex;align-items:center;gap:8px;flex-shrink:0;transform-style:preserve-3d}
 .icon-btn{width:38px;height:38px;border-radius:9px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;display:grid;place-items:center;transition:border-color .2s,background .2s,transform .2s,box-shadow .2s}
 .icon-btn:hover{border-color:var(--accent);transform:translateY(-1px);box-shadow:0 4px 12px rgba(17,24,39,.08)}
 .hamburger{display:none}
@@ -69,6 +70,10 @@ header.scrolled{background:color-mix(in srgb,var(--bg) 94%,transparent);box-shad
 .hamburger[aria-expanded="true"] .hamburger-icon span:nth-child(1){top:6px;transform:rotate(45deg)}
 .hamburger[aria-expanded="true"] .hamburger-icon span:nth-child(2){opacity:0;transform:scaleX(.4)}
 .hamburger[aria-expanded="true"] .hamburger-icon span:nth-child(3){top:6px;transform:rotate(-45deg)}
+#mkDropdown{display:block!important;opacity:0;visibility:hidden;pointer-events:none;transform:perspective(700px) rotateX(-12deg) translateY(-8px);transform-origin:top center;transition:opacity .18s ease,transform .25s ease,visibility 0s linear .25s}
+#mkDropdown.open,#mkWrap:focus-within #mkDropdown{opacity:1;visibility:visible;pointer-events:auto;transform:perspective(700px) rotateX(0) translateY(0);transition:opacity .18s ease,transform .25s ease,visibility 0s}
+#mkDropdown a{white-space:nowrap;transition:transform .2s,color .2s,background .2s}
+#mkDropdown a:hover{transform:translateX(4px) translateZ(5px)}
 .mobile-menu{display:flex;position:absolute;top:100%;left:0;right:0;background:var(--card);border-bottom:1px solid var(--border);padding:0 24px;flex-direction:column;gap:4px;max-height:0;overflow-x:hidden;overflow-y:auto;opacity:0;visibility:hidden;pointer-events:none;transform:perspective(900px) rotateX(-12deg) translateY(-10px);transform-origin:top center;box-shadow:var(--shadow-lg);transition:max-height .34s ease,padding .25s ease,opacity .2s ease,transform .3s ease,visibility 0s linear .34s}
 .mobile-menu.open{max-height:calc(100vh - 68px);padding:14px 24px 18px;opacity:1;visibility:visible;pointer-events:auto;transform:perspective(900px) rotateX(0) translateY(0);transition:max-height .34s ease,padding .25s ease,opacity .2s ease,transform .3s ease,visibility 0s}
 .mobile-menu a{text-decoration:none;color:var(--text);font-weight:500;padding:12px 10px;border-bottom:1px solid var(--border);border-radius:8px;opacity:0;transform:perspective(700px) rotateX(-18deg) translateY(-7px);transform-origin:top center;transition:color .2s,background .2s,border-color .2s,opacity .2s ease,transform .25s ease}
@@ -85,8 +90,9 @@ header.scrolled{background:color-mix(in srgb,var(--bg) 94%,transparent);box-shad
 .mobile-marketplaces a{padding:9px 10px;border:1px solid var(--border);font-size:.88rem}
 .mobile-menu.open .mobile-marketplaces a{transition-delay:.16s}
 .mobile-menu a:focus-visible,.hamburger:focus-visible,.icon-btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-@media(min-width:881px){.mobile-menu{display:none}}
-@media(max-width:880px){.nav{justify-content:space-between}.nav-links{display:none}.nav-right{margin-left:auto;flex-shrink:0}.hamburger{display:grid}.nav-right>.btn{display:none}}
+@media(min-width:1025px){.mobile-menu{display:none}}
+@media(min-width:1025px) and (max-width:1160px){.nav{gap:4px}.logo{font-size:1.12rem;gap:7px;margin-right:6px}.nav-links{gap:0}.nav-links a{font-size:.82rem;padding:8px 7px}.nav-right{gap:5px}.nav-right .icon-btn{width:34px;height:34px}}
+@media(max-width:1024px){.nav{justify-content:space-between}.nav-links{display:none}.nav-right{margin-left:auto;flex-shrink:0}.hamburger{display:grid}.nav-right>.btn{display:none}}
 /* HERO */
 .hero{padding:96px 0 72px;position:relative;overflow:hidden}
 .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
@@ -235,10 +241,14 @@ footer .footer-column a:hover{color:var(--accent-ink);transform:translateX(4px) 
 .guide-item span{font-size:.8rem;color:var(--muted);flex-shrink:0}
 .stat-hero{display:flex;gap:36px;flex-wrap:wrap;margin-top:48px}
 .fade-in{animation:fadeUp .5s ease both}
+@keyframes navEnter{from{opacity:0;transform:perspective(1000px) rotateX(-7deg) translateY(-12px) translateZ(-18px)}to{opacity:1;transform:none}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 .hero,#app>section,footer,.card,.price-card,.calc-card,.faq-item,.cta-band,.content-block,.legal-page,.step,.guide-item{animation:depthEnter .65s cubic-bezier(.2,.8,.2,1)}
 @keyframes depthEnter{from{opacity:0;transform:perspective(1000px) rotateX(5deg) translateY(14px) translateZ(-12px)}to{opacity:1;transform:perspective(1000px) rotateX(0) translateY(0) translateZ(0)}}
 @media(hover:hover) and (pointer:fine){
+  header:hover .nav{transform:perspective(1200px) rotateX(.6deg) translateZ(2px)}
+  .nav-links a:hover{transform:perspective(500px) rotateX(7deg) translateY(-2px) translateZ(4px)}
+  .nav-right .icon-btn:hover{transform:perspective(500px) rotateY(-7deg) rotateX(5deg) translateY(-1px) translateZ(4px)}
   .card:hover{transform:perspective(1000px) rotateX(2deg) rotateY(-2deg) translateY(-4px) translateZ(4px);box-shadow:var(--shadow-lg);border-color:color-mix(in srgb,var(--accent) 40%,var(--border))}
   .card:hover .card-icon{transform:translateZ(24px) rotateY(10deg) rotateX(-8deg);box-shadow:0 10px 20px color-mix(in srgb,var(--accent) 18%,transparent)}
   .price-card:hover{transform:perspective(1100px) rotateX(2deg) rotateY(-1deg) translateY(-5px) translateZ(5px);box-shadow:var(--shadow-lg)}
@@ -286,7 +296,7 @@ footer .footer-column a:hover{color:var(--accent-ink);transform:translateX(4px) 
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
-  .logo:hover .logo-mark,.icon-btn:hover,.mobile-menu,.mobile-menu a,.card:hover,.card:hover .card-icon,.price-card:hover,.calc-card:hover,.faq-item:hover,.cta-band:hover,.btn:hover,.footer-action:hover,footer .footer-column a:hover{transform:none!important}
+  .logo:hover .logo-mark,.icon-btn:hover,header:hover .nav,.nav-links a:hover,.mobile-menu,.mobile-menu a,.card:hover,.card:hover .card-icon,.price-card:hover,.calc-card:hover,.faq-item:hover,.cta-band:hover,.btn:hover,.footer-action:hover,footer .footer-column a:hover{transform:none!important}
 }
 </style>
 </head>
@@ -298,8 +308,8 @@ footer .footer-column a:hover{color:var(--accent-ink);transform:translateX(4px) 
       <a href="#/">Home</a>
       <a href="#/calculators">Calculators</a>
       <div style="position:relative" id="mkWrap">
-        <a href="#/compare" id="mkNavLink">Marketplaces ▾</a>
-        <div id="mkDropdown" style="display:none;position:absolute;top:100%;left:0;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-lg);padding:8px;min-width:180px;z-index:50">
+        <a href="#/compare" id="mkNavLink" aria-haspopup="true" aria-controls="mkDropdown" aria-expanded="false">Marketplaces ▾</a>
+        <div id="mkDropdown" style="position:absolute;top:100%;left:0;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-lg);padding:8px;min-width:180px;z-index:50">
           <a href="#/amazon" style="display:block;padding:10px 14px;border-radius:8px">Amazon</a>
           <a href="#/ebay" style="display:block;padding:10px 14px;border-radius:8px">eBay</a>
           <a href="#/shopify" style="display:block;padding:10px 14px;border-radius:8px">Shopify</a>
@@ -1286,7 +1296,7 @@ function setMobileMenu(open){
 }
 function toggleMobile(){ setMobileMenu(!document.getElementById("mobileMenu").classList.contains("open")); }
 window.addEventListener("hashchange",()=>setMobileMenu(false));
-window.addEventListener("resize",()=>{ if(window.innerWidth>880) setMobileMenu(false); },{passive:true});
+window.addEventListener("resize",()=>{ if(window.innerWidth>1024) setMobileMenu(false); },{passive:true});
 document.addEventListener("click",e=>{
   if(!e.target.closest("header")&&document.getElementById("mobileMenu").classList.contains("open")) setMobileMenu(false);
 });
@@ -1311,8 +1321,15 @@ document.addEventListener("keydown",e=>{
 // theme init
 (function(){ const s=localStorage.getItem("sm-theme"); if(s) document.documentElement.setAttribute("data-theme",s); else if(matchMedia("(prefers-color-scheme: dark)").matches) document.documentElement.setAttribute("data-theme","dark"); })();
 // marketplace dropdown
-document.getElementById("mkWrap").addEventListener("mouseenter",()=>document.getElementById("mkDropdown").style.display="block");
-document.getElementById("mkWrap").addEventListener("mouseleave",()=>document.getElementById("mkDropdown").style.display="none");
+const mkWrap=document.getElementById("mkWrap"),mkDropdown=document.getElementById("mkDropdown"),mkNavLink=document.getElementById("mkNavLink");
+function setMarketplaceMenu(open){
+  mkDropdown.classList.toggle("open",open);
+  mkNavLink.setAttribute("aria-expanded",String(open));
+}
+mkWrap.addEventListener("mouseenter",()=>setMarketplaceMenu(true));
+mkWrap.addEventListener("mouseleave",()=>setMarketplaceMenu(false));
+mkWrap.addEventListener("focusin",()=>setMarketplaceMenu(true));
+mkWrap.addEventListener("focusout",e=>{ if(!mkWrap.contains(e.relatedTarget)) setMarketplaceMenu(false); });
 // counters
 function animateCounters(){ document.querySelectorAll("[data-count]").forEach(el=>{ const target=+el.dataset.count; let cur=0; const step=Math.max(1,Math.ceil(target/40)); const iv=setInterval(()=>{ cur+=step; if(cur>=target){cur=target;clearInterval(iv);} el.textContent=cur; },30); }); }
 router();
