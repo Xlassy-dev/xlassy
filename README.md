@@ -2,6 +2,14 @@
 
 Static SellerMargin site with a Vercel serverless contact endpoint.
 
+## SEO routes
+
+Internal links use clean paths such as `/calculator/ebay-us-fee-calculator`.
+`vercel.json` rewrites app routes to `index.html`; `robots.txt` and
+`sitemap.xml` expose crawl rules and indexable pages. When changing the live
+domain, update the canonical, Open Graph and structured-data URLs in
+`index.html`, plus the sitemap and robots sitemap URL.
+
 ## Vercel Web Analytics
 
 The site includes Vercel's HTML analytics snippet; no analytics package or
