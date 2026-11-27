@@ -75,12 +75,11 @@ header.scrolled{background:color-mix(in srgb,var(--bg) 94%,transparent);box-shad
 #mkDropdown a{white-space:nowrap;transition:transform .2s,color .2s,background .2s}
 #mkDropdown a:hover{transform:translateX(4px) translateZ(5px)}
 #mkWrap::after{content:"";position:absolute;left:0;right:0;top:100%;height:12px}
-.ebay-fields-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;align-items:end}
+.ebay-fields-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;align-items:end}
 .ebay-fields-grid .field{margin-bottom:0}
 .tool-layout-ebay{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(320px,.75fr);gap:48px;align-items:start}
-@media(max-width:1100px){.ebay-fields-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:880px){.tool-layout-ebay{grid-template-columns:1fr}.ebay-fields-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:520px){.ebay-fields-grid{grid-template-columns:1fr}}
+@media(max-width:880px){.tool-layout-ebay{grid-template-columns:1fr}}
+@media(max-width:520px){.ebay-fields-grid{grid-template-columns:minmax(0,1fr)}}
 .mobile-menu{display:flex;position:absolute;top:100%;left:0;right:0;background:var(--card);border-bottom:1px solid var(--border);padding:0 24px;flex-direction:column;gap:4px;max-height:0;overflow-x:hidden;overflow-y:auto;opacity:0;visibility:hidden;pointer-events:none;transform:perspective(900px) rotateX(-12deg) translateY(-10px);transform-origin:top center;box-shadow:var(--shadow-lg);transition:max-height .34s ease,padding .25s ease,opacity .2s ease,transform .3s ease,visibility 0s linear .34s}
 .mobile-menu.open{max-height:calc(100vh - 68px);padding:14px 24px 18px;opacity:1;visibility:visible;pointer-events:auto;transform:perspective(900px) rotateX(0) translateY(0);transition:max-height .34s ease,padding .25s ease,opacity .2s ease,transform .3s ease,visibility 0s}
 .mobile-menu a{text-decoration:none;color:var(--text);font-weight:500;padding:12px 10px;border-bottom:1px solid var(--border);border-radius:8px;opacity:0;transform:perspective(700px) rotateX(-18deg) translateY(-7px);transform-origin:top center;transition:color .2s,background .2s,border-color .2s,opacity .2s ease,transform .25s ease}
@@ -122,6 +121,7 @@ header.scrolled{background:color-mix(in srgb,var(--bg) 94%,transparent);box-shad
 .field .input-wrap:focus-within{border-color:var(--accent)}
 .field .prefix{flex-shrink:0;padding:0 12px;color:var(--muted);font-size:.9rem;font-weight:600;user-select:none}
 .field input{flex:1;min-width:0;background:transparent;border:none;outline:none;padding:12px 14px 12px 0;font-size:1rem;font-weight:600;color:var(--text);font-family:inherit}
+.field .input-wrap>input:first-child{padding-left:14px}
 .field .suffix{flex-shrink:0;padding:0 12px;color:var(--muted);font-size:.85rem;user-select:none}
 .field select{width:100%;padding:12px 14px;background:var(--bg);border:1px solid var(--border);border-radius:10px;color:var(--text);font:inherit}
 .country-fees{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:12px 0 18px}
