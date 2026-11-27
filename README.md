@@ -9,6 +9,8 @@ Internal links use clean paths such as `/calculator/ebay-us-fee-calculator`.
 `sitemap.xml` expose crawl rules and indexable pages. When changing the live
 domain, update the canonical, Open Graph and structured-data URLs in
 `index.html`, plus the sitemap and robots sitemap URL.
+Brand assets live in `assets/`; the 1200×630 PNG is used for both Open Graph
+and Twitter large-image cards.
 
 ## Vercel Web Analytics
 

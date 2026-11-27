@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#101824"/>
+      <stop offset="1" stop-color="#172638"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#E8C95F"/>
+      <stop offset="1" stop-color="#B18A1D"/>
+    </linearGradient>
+    <pattern id="grid" width="42" height="42" patternUnits="userSpaceOnUse">
+      <path d="M42 0H0V42" fill="none" stroke="#fff" stroke-opacity=".035"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#background)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <circle cx="1020" cy="90" r="245" fill="#D1A832" opacity=".08"/>
+  <rect x="64" y="58" width="62" height="62" rx="18" fill="url(#gold)"/>
+  <path d="M105 75H89a8 8 0 0 0 0 16h8a8 8 0 0 1 0 16H82" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="5"/>
+  <path d="m83 101 7-7 6 5 9-11" fill="none" stroke="#FFE9A0" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+  <text x="146" y="101" fill="#F8FAFC" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="35" font-weight="700">SellerMargin</text>
+  <text x="66" y="191" fill="#D8B642" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" letter-spacing="3">PROFIT TOOLS FOR ONLINE SELLERS</text>
+  <text x="64" y="281" fill="#F8FAFC" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="57" font-weight="800">Know your real</text>
+  <text x="64" y="352" fill="#E8C95F" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="57" font-weight="800">selling profit.</text>
+  <text x="67" y="409" fill="#C5CED8" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="21">Free calculators for ecommerce fees, margins, ROI</text>
+  <text x="67" y="439" fill="#C5CED8" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="21">and break-even pricing.</text>
+  <rect x="67" y="493" width="480" height="1" fill="#fff" opacity=".16"/>
+  <text x="67" y="535" fill="#94A3B8" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" font-weight="600">AMAZON  ·  EBAY  ·  SHOPIFY  ·  ETSY  ·  WALMART</text>
+  <rect x="683" y="151" width="446" height="330" rx="26" fill="#1C2A3A" stroke="#FFFFFF" stroke-opacity=".12"/>
+  <text x="720" y="198" fill="#AEBBCC" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="14" font-weight="700" letter-spacing="2">SELLER DASHBOARD</text>
+  <rect x="720" y="223" width="370" height="1" fill="#fff" opacity=".12"/>
+  <path d="M730 400 790 354l62 18 57-74 60 33 67-96" fill="none" stroke="url(#gold)" stroke-linecap="round" stroke-linejoin="round" stroke-width="7"/>
+  <path d="M730 420h360M730 360h360M730 300h360" fill="none" stroke="#fff" stroke-opacity=".09" stroke-dasharray="4 8"/>
+  <circle cx="1026" cy="235" r="8" fill="#E8C95F"/>
+  <rect x="722" y="435" width="86" height="8" rx="4" fill="#D8B642" opacity=".9"/>
+  <rect x="823" y="435" width="86" height="8" rx="4" fill="#42B8A7" opacity=".9"/>
+  <rect x="924" y="435" width="86" height="8" rx="4" fill="#7AA9E8" opacity=".9"/>
+</svg>

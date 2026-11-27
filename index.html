@@ -7,6 +7,9 @@
 <meta name="description" content="Calculate ecommerce profit, marketplace fees, margins, ROI and break-even prices with free seller calculators for Amazon, eBay and more.">
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
 <meta name="theme-color" content="#FAFAF8">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
 <link rel="canonical" href="https://sellermargin-five.vercel.app/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="SellerMargin">
@@ -14,13 +17,21 @@
 <meta property="og:description" content="Calculate ecommerce profit, marketplace fees, margins, ROI and break-even prices with free seller calculators for Amazon, eBay and more.">
 <meta property="og:url" content="https://sellermargin-five.vercel.app/">
 <meta property="og:locale" content="en_US">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://sellermargin-five.vercel.app/assets/social-card.png">
+<meta property="og:image:secure_url" content="https://sellermargin-five.vercel.app/assets/social-card.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="SellerMargin: free ecommerce profit and fee calculators for online sellers">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Ecommerce Profit Calculators for Sellers | SellerMargin">
 <meta name="twitter:description" content="Calculate ecommerce profit, marketplace fees, margins, ROI and break-even prices with free seller calculators for Amazon, eBay and more.">
+<meta name="twitter:image" content="https://sellermargin-five.vercel.app/assets/social-card.png">
+<meta name="twitter:image:alt" content="SellerMargin: free ecommerce profit and fee calculators for online sellers">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script id="site-schema" type="application/ld+json">
-{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://sellermargin-five.vercel.app/#organization","name":"SellerMargin","url":"https://sellermargin-five.vercel.app/"},{"@type":"WebSite","@id":"https://sellermargin-five.vercel.app/#website","name":"SellerMargin","url":"https://sellermargin-five.vercel.app/","description":"Free ecommerce profit and marketplace fee calculators for online sellers.","inLanguage":"en","publisher":{"@id":"https://sellermargin-five.vercel.app/#organization"}}]}
+{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://sellermargin-five.vercel.app/#organization","name":"SellerMargin","url":"https://sellermargin-five.vercel.app/","logo":"https://sellermargin-five.vercel.app/assets/brand-mark.svg"},{"@type":"WebSite","@id":"https://sellermargin-five.vercel.app/#website","name":"SellerMargin","url":"https://sellermargin-five.vercel.app/","description":"Free ecommerce profit and marketplace fee calculators for online sellers.","inLanguage":"en","publisher":{"@id":"https://sellermargin-five.vercel.app/#organization"}}]}
 </script>
 <style>
 :root{
@@ -324,7 +335,7 @@ footer .footer-column a:hover{color:var(--accent-ink);transform:translateX(4px) 
 <body>
 <header>
   <div class="container nav">
-    <a class="logo" href="/"><span class="logo-mark">S</span>SellerMargin</a>
+    <a class="logo" href="/"><img class="logo-mark" src="/assets/brand-mark.svg" width="30" height="30" alt="">SellerMargin</a>
     <nav class="nav-links" aria-label="Primary">
       <a href="/">Home</a>
       <a href="/calculators">Calculators</a>
@@ -381,7 +392,7 @@ footer .footer-column a:hover{color:var(--accent-ink);transform:translateX(4px) 
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <a class="logo" href="/" style="margin-bottom:14px"><span class="logo-mark">S</span>SellerMargin</a>
+        <a class="logo" href="/" style="margin-bottom:14px"><img class="logo-mark" src="/assets/brand-mark.svg" width="30" height="30" alt="">SellerMargin</a>
         <p>Know Your Real Selling Profit. Calculate fees, margins and ROI across every major marketplace.</p>
         <a class="footer-action" href="/calculators">Explore free calculators <span aria-hidden="true">→</span></a>
       </div>
@@ -1730,14 +1741,18 @@ function updateSeo(route){
   setMeta('meta[property="og:title"]',"property","og:title",seo.title);
   setMeta('meta[property="og:description"]',"property","og:description",description);
   setMeta('meta[property="og:url"]',"property","og:url",canonical);
+  setMeta('meta[property="og:image"]',"property","og:image",`${SEO_SITE_URL}/assets/social-card.png`);
+  setMeta('meta[property="og:image:alt"]',"property","og:image:alt",`SellerMargin — ${seo.title}`);
   setMeta('meta[name="twitter:title"]',"name","twitter:title",seo.title);
   setMeta('meta[name="twitter:description"]',"name","twitter:description",description);
+  setMeta('meta[name="twitter:image"]',"name","twitter:image",`${SEO_SITE_URL}/assets/social-card.png`);
+  setMeta('meta[name="twitter:image:alt"]',"name","twitter:image:alt",`SellerMargin — ${seo.title}`);
   let canonicalLink=document.querySelector('link[rel="canonical"]');
   if(!canonicalLink){canonicalLink=document.createElement("link");canonicalLink.rel="canonical";document.head.appendChild(canonicalLink);}
   canonicalLink.href=canonical;
   const webpage={"@type":"WebPage","name":seo.title,"description":description,"url":canonical,"inLanguage":"en","isPartOf":{"@id":`${SEO_SITE_URL}/#website`}};
   const graph=[
-    {"@type":"Organization","@id":`${SEO_SITE_URL}/#organization`,"name":"SellerMargin","url":`${SEO_SITE_URL}/`},
+    {"@type":"Organization","@id":`${SEO_SITE_URL}/#organization`,"name":"SellerMargin","url":`${SEO_SITE_URL}/`,"logo":`${SEO_SITE_URL}/assets/brand-mark.svg`},
     {"@type":"WebSite","@id":`${SEO_SITE_URL}/#website`,"name":"SellerMargin","url":`${SEO_SITE_URL}/`,"description":"Free ecommerce profit and marketplace fee calculators for online sellers.","inLanguage":"en","publisher":{"@id":`${SEO_SITE_URL}/#organization`}},
     webpage
   ];
@@ -1920,6 +1935,12 @@ mkWrap.addEventListener("focusin",()=>setMarketplaceMenu(true));
 mkWrap.addEventListener("focusout",e=>{ if(!mkWrap.contains(e.relatedTarget)) setMarketplaceMenu(false); });
 // counters
 function animateCounters(){ document.querySelectorAll("[data-count]").forEach(el=>{ const target=+el.dataset.count; let cur=0; const step=Math.max(1,Math.ceil(target/40)); const iv=setInterval(()=>{ cur+=step; if(cur>=target){cur=target;clearInterval(iv);} el.textContent=cur; },30); }); }
+if(location.protocol==="file:"){
+  document.querySelectorAll('img[src^="/assets/"],link[href^="/assets/"]').forEach(element=>{
+    const attribute=element.tagName==="LINK"?"href":"src";
+    element.setAttribute(attribute,element.getAttribute(attribute).slice(1));
+  });
+}
 router();
 </script>
 <script>
